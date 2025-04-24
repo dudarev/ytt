@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ytt"
+version = "0.1.0"
+description = "A simple CLI tool to fetch YouTube video transcripts."
+readme = "README.md"
+requires-python = ">=3.12"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+    "Topic :: Multimedia :: Video",
+    "Topic :: Utilities",
+]
+dependencies = [
+    "youtube-transcript-api~=1.0.3",
+    "appdirs~=1.4.4",
+]
+
+[project.scripts]
+ytt = "ytt:main"
+
+[project.urls]
+"Homepage" = "https://github.com/dudarev/ytt"
+"Bug Tracker" = "https://github.com/dudarev/ytt/issues"
