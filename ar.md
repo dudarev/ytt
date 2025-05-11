@@ -1,6 +1,9 @@
 File inspired by [The append-and-review note idea by Andrej Karpathy](https://karpathy.bearblog.dev/the-append-and-review-note/)
 
-Introduce (architecture) decision records
+Automatically copy
+    Potentially a setting to disable this option
+
+Introduce (architecture) decision records - ADR 0002 about ADRs
 
 Introduce some rules for AI assistants (see "AI Assistant Instruction Conventions" in Dev)
 
