@@ -79,6 +79,10 @@ def extract_video_id(url):
     if parsed_url.path.startswith('/v/'):
         return parsed_url.path.split('/')[2]
 
+    # Shorts URL: https://www.youtube.com/shorts/VIDEO_ID
+    if parsed_url.path.startswith('/shorts/'):
+        return parsed_url.path.split('/')[2]
+
     # Add more patterns here if needed
 
     return None
@@ -114,7 +118,6 @@ def _save_to_cache(cache_filepath, cache_dir, transcript_data):
         # Use binary write mode 'wb' for pickle
         with open(cache_filepath, 'wb') as f:
             pickle.dump(transcript_data, f)
-        print(f"Cached transcript to {cache_filepath}", file=sys.stderr)
     except Exception as e:
         print(f"Warning: Could not save transcript to cache file {cache_filepath}: {e}", file=sys.stderr)
 
