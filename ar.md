@@ -3,6 +3,18 @@ File inspired by [The append-and-review note idea by Andrej Karpathy](https://ka
 Automatically copy
     Potentially a setting to disable this option
 
+```
+pip install pyperclip
+import pyperclip
+pyperclip.copy("Text to copy")
+```
+
+Set up CI
+
+Write the most important tests
+
+Ensure supported URL formats are consistent between README and code.
+
 Introduce (architecture) decision records - ADR 0002 about ADRs
 
 Introduce some rules for AI assistants (see "AI Assistant Instruction Conventions" in Dev)
