@@ -1,5 +1,11 @@
 File inspired by [The append-and-review note idea by Andrej Karpathy](https://karpathy.bearblog.dev/the-append-and-review-note/)
 
+Output the title and the link in the beginning
+
+Output YouTube provided description in the beginning
+
+Have config to include the title and the description
+
 Automatically copy
     Potentially a setting to disable this option
 
