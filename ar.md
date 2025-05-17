@@ -4,6 +4,8 @@ Output the title and the link in the beginning
 
 Output YouTube provided description in the beginning
 
+Use --- to separate description from the transcript or h2-level sections (Description, Transcript)
+
 Have config to include the title and the description
 
 Automatically copy
