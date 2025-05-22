@@ -6,6 +6,7 @@ import os
 import pickle 
 from urllib.parse import urlparse, parse_qs
 
+import pyperclip
 from appdirs import user_config_dir
 from youtube_transcript_api import YouTubeTranscriptApi, NoTranscriptFound, TranscriptsDisabled
 
@@ -229,6 +230,11 @@ def main():
     # --- Fetch transcript command ---
     fetch_parser = subparsers.add_parser('fetch', help='Fetch transcript for a given URL (default command if none specified)')
     fetch_parser.add_argument('youtube_url', help='The URL of the YouTube video.')
+    fetch_parser.add_argument(
+        '--no-copy',
+        action='store_true',
+        help='Do not copy the transcript to the clipboard.'
+    )
 
     # --- Config command ---
     config_parser = subparsers.add_parser('config', help='Configure ytt settings.')
@@ -280,6 +286,21 @@ def main():
         transcript = get_transcript(video_id, preferred_languages=preferred_langs)
 
         if transcript:
+            if not args.no_copy:
+                try:
+                    transcript_text = "\n".join([line.text for line in transcript])
+                    pyperclip.copy(transcript_text)
+                except pyperclip.PyperclipException as e:
+                    # Check if the error message indicates a missing copy/paste mechanism
+                    if "pbcopy" in str(e).lower() or "xclip" in str(e).lower() or "xsel" in str(e).lower() or "wl-copy" in str(e).lower():
+                        print(
+                            "Warning: Could not copy to clipboard. Please install xclip or xsel (for Linux) or pbcopy (for macOS) or wl-copy (for Wayland).",
+                            file=sys.stderr
+                        )
+                    else:
+                        # Print a generic error message for other PyperclipExceptions
+                        print(f"Warning: Could not copy to clipboard: {e}", file=sys.stderr)
+
             print_transcript(transcript)
         else:
             sys.exit(1)
