@@ -2,15 +2,14 @@ import unittest
 from unittest.mock import patch, MagicMock
 import io # For capturing stderr/stdout
 import sys
-import os
+from pathlib import Path
 
 # Add project root to sys.path to allow importing ytt
-project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
-sys.path.insert(0, project_root)
+project_root = Path(__file__).parent.parent.resolve()
+sys.path.insert(0, str(project_root))
 
-import ytt # Import the module under test
+import ytt
 
-# Make sure to import pyperclip if its exceptions are used directly in tests
 import pyperclip
 
 class TestYttClipboard(unittest.TestCase):
@@ -92,6 +91,6 @@ class TestYttClipboard(unittest.TestCase):
 
 if __name__ == '__main__':
     # Create tests directory if it doesn't exist
-    if not os.path.exists('tests'):
-        os.makedirs('tests')
+    if not Path('tests').exists():
+        Path('tests').mkdir()
     unittest.main()

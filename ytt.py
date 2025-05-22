@@ -3,6 +3,7 @@ import re
 import argparse
 import json
 import os
+from pathlib import Path
 import pickle 
 from urllib.parse import urlparse, parse_qs
 
@@ -12,26 +13,27 @@ from youtube_transcript_api import YouTubeTranscriptApi, NoTranscriptFound, Tran
 
 CONFIG_DIR_NAME = "ytt"
 CONFIG_FILE_NAME = "config.json"
-CACHE_DIR_NAME = "cache" 
+CACHE_DIR_NAME = "cache"
+CLIPBOARD_UTILITIES = ["pbcopy", "xclip", "xsel", "wl-copy"]
 
 def get_config_dir():
     """Gets the user-specific config directory for ytt."""
-    return user_config_dir(CONFIG_DIR_NAME)
+    return Path(user_config_dir(CONFIG_DIR_NAME))
 
 def get_cache_dir():
     """Gets the user-specific cache directory for ytt."""
     config_dir = get_config_dir()
-    return os.path.join(config_dir, CACHE_DIR_NAME)
+    return config_dir / CACHE_DIR_NAME
 
 def get_config_file_path():
     """Gets the full path to the config file."""
     config_dir = get_config_dir()
-    return os.path.join(config_dir, CONFIG_FILE_NAME)
+    return config_dir / CONFIG_FILE_NAME
 
 def load_config():
     """Loads the configuration from the JSON file."""
     config_path = get_config_file_path()
-    if os.path.exists(config_path):
+    if config_path.exists():
         try:
             with open(config_path, 'r') as f:
                 return json.load(f)
@@ -48,7 +50,7 @@ def save_config(config_data):
     config_dir = get_config_dir()
     config_path = get_config_file_path()
     try:
-        os.makedirs(config_dir, exist_ok=True) # Ensure directory exists
+        config_dir.mkdir(parents=True, exist_ok=True) # Ensure directory exists
         with open(config_path, 'w') as f:
             json.dump(config_data, f, indent=4)
     except Exception as e:
@@ -95,7 +97,7 @@ def _get_cache_filepath(video_id, preferred_languages):
     cache_dir = get_cache_dir()
     lang_key = "_".join(sorted([lang.lower() for lang in preferred_languages])) if preferred_languages else "any"
     cache_filename = f"{video_id}_{lang_key}.pkl" # Changed extension to .pkl
-    return os.path.join(cache_dir, cache_filename), cache_dir, lang_key
+    return cache_dir / cache_filename, cache_dir, lang_key
 
 def _load_from_cache(cache_filepath):
     """Loads transcript data from a given cache file path using pickle."""
@@ -106,7 +108,7 @@ def _load_from_cache(cache_filepath):
     except pickle.UnpicklingError:
         print(f"Warning: Could not unpickle cache file {cache_filepath}. Fetching again.", file=sys.stderr)
     except FileNotFoundError:
-         # This shouldn't happen if os.path.exists check passes, but good practice
+         # This shouldn't happen if Path.exists() check passes, but good practice
          print(f"Warning: Cache file not found {cache_filepath} despite check. Fetching again.", file=sys.stderr)
     except Exception as e:
         print(f"Warning: Error reading cache file {cache_filepath}: {e}. Fetching again.", file=sys.stderr)
@@ -115,7 +117,7 @@ def _load_from_cache(cache_filepath):
 def _save_to_cache(cache_filepath, cache_dir, transcript_data):
     """Saves transcript data to the cache using pickle."""
     try:
-        os.makedirs(cache_dir, exist_ok=True) # Ensure cache directory exists
+        cache_dir.mkdir(parents=True, exist_ok=True) # Ensure cache directory exists
         # Use binary write mode 'wb' for pickle
         with open(cache_filepath, 'wb') as f:
             pickle.dump(transcript_data, f)
@@ -195,7 +197,7 @@ def get_transcript(video_id, preferred_languages=None):
     cache_filepath, cache_dir, lang_key = _get_cache_filepath(video_id, preferred_languages)
 
     # 1. Check cache
-    if os.path.exists(cache_filepath):
+    if cache_filepath.exists():
         cached_data = _load_from_cache(cache_filepath)
         if cached_data:
             return cached_data # Return data from cache if loaded successfully
@@ -218,6 +220,28 @@ def print_transcript(transcript_data):
         return
     for entry in transcript_data:
         print(entry.text)
+
+
+def copy_to_clipboard(transcript):
+    """
+    Copies transcript text to clipboard and handles potential clipboard errors.
+    Returns True if successful, False otherwise.
+    """
+    try:
+        transcript_text = "\n".join([line.text for line in transcript])
+        pyperclip.copy(transcript_text)
+        return True
+    except pyperclip.PyperclipException as e:
+        # Check if the error message indicates a missing copy/paste mechanism
+        if any(utility in str(e).lower() for utility in CLIPBOARD_UTILITIES):
+            print(
+                "Warning: Could not copy to clipboard. Please install xclip or xsel (for Linux) or pbcopy (for macOS) or wl-copy (for Wayland).",
+                file=sys.stderr
+            )
+        else:
+            # Print a generic error message for other PyperclipExceptions
+            print(f"Warning: Could not copy to clipboard: {e}", file=sys.stderr)
+        return False
 
 
 def main():
@@ -287,20 +311,7 @@ def main():
 
         if transcript:
             if not args.no_copy:
-                try:
-                    transcript_text = "\n".join([line.text for line in transcript])
-                    pyperclip.copy(transcript_text)
-                except pyperclip.PyperclipException as e:
-                    # Check if the error message indicates a missing copy/paste mechanism
-                    if "pbcopy" in str(e).lower() or "xclip" in str(e).lower() or "xsel" in str(e).lower() or "wl-copy" in str(e).lower():
-                        print(
-                            "Warning: Could not copy to clipboard. Please install xclip or xsel (for Linux) or pbcopy (for macOS) or wl-copy (for Wayland).",
-                            file=sys.stderr
-                        )
-                    else:
-                        # Print a generic error message for other PyperclipExceptions
-                        print(f"Warning: Could not copy to clipboard: {e}", file=sys.stderr)
-
+                copy_to_clipboard(transcript)
             print_transcript(transcript)
         else:
             sys.exit(1)
