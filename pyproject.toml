@@ -18,7 +18,7 @@ classifiers = [
 dependencies = [
     "youtube-transcript-api~=1.0.3",
     "appdirs~=1.4.4",
-    "pyperclip~=1.8.2", # TODO: Check for latest version
+    "pyperclip~=1.9.0",
 ]
 
 [project.scripts]
