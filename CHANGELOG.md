@@ -6,6 +6,24 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [0.4.0] - 2025-06-20
+
+### Fixed
+- Fixed ModuleNotFoundError that occurred when installing with `pipx install git+https://github.com/dudarev/ytt.git`
+- Resolved packaging issues by restructuring code into proper Python package format
+
+### Changed
+- Restructured project to use standard `src/` layout for better packaging practices
+- Moved main module from `ytt.py` to `src/ytt/main.py` with proper package structure
+- Updated `pyproject.toml` to reflect new package structure and support proper entry points
+- Improved package discovery configuration in build system
+
+### Technical Details
+- Created `src/ytt/__init__.py` to properly export the main function
+- Updated setuptools configuration to find packages in `src/` directory
+- Maintained backward compatibility for all CLI commands and functionality
+
+
 ## [0.3.0] - 2025-05-22
 
 ### Added
