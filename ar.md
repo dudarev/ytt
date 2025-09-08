@@ -1,10 +1,6 @@
 File inspired by [The append-and-review note idea by Andrej Karpathy](https://karpathy.bearblog.dev/the-append-and-review-note/)
 
-Output the title and the link in the beginning
-
-Output YouTube provided description in the beginning
-
-Use --- to separate description from the transcript or h2-level sections (Description, Transcript)
+Create a separate library to get a video title and description for YouTube from parsing the page. it can be heavily AI coded we can get several pages as an example and and devise a strategy to extract description and titlec:qo separate description from the transcript or h2-level sections (Description, Transcript)
 
 Have config to include the title and the description
 
