@@ -7,7 +7,7 @@ from typing import Callable, Iterable, Optional, Sequence
 
 from ..domain import TranscriptLine, TranscriptService, VideoID, extract_video_id
 from ..infrastructure.clipboard import ClipboardGateway
-from ..infrastructure.config import ConfigRepository
+from .config_service import ConfigService
 
 
 class FetchTranscriptUseCase:
@@ -16,24 +16,17 @@ class FetchTranscriptUseCase:
     def __init__(
         self,
         transcript_service: TranscriptService,
-        config_repository: ConfigRepository,
+        config_service: ConfigService,
         clipboard: ClipboardGateway,
-        extractor: Callable[[str], Optional[VideoID]] = extract_video_id,
-        languages_provider: Optional[Callable[[], Sequence[str]]] = None,
-        transcript_fetcher: Optional[Callable[[str, Sequence[str]], Optional[list[TranscriptLine]]]] = None,
+        extractor: Optional[Callable[[str], Optional[VideoID]]] = None,
     ) -> None:
         self._service = transcript_service
-        self._config_repository = config_repository
+        self._config_service = config_service
         self._clipboard = clipboard
-        self._extractor = extractor
-        self._languages_provider = languages_provider
-        self._transcript_fetcher = transcript_fetcher
+        self._extractor = extractor or extract_video_id
 
     def _resolve_preferred_languages(self) -> Sequence[str]:
-        if self._languages_provider is not None:
-            languages = list(self._languages_provider())
-        else:
-            languages = self._config_repository.get_preferred_languages()
+        languages = list(self._config_service.get_preferred_languages())
         if not languages:
             print("Error: Preferred languages not set in configuration.", file=sys.stderr)
             print("Please set them using: ytt config languages <lang1>,<lang2>,...", file=sys.stderr)
@@ -53,10 +46,7 @@ class FetchTranscriptUseCase:
     def execute(self, url: str, copy_to_clipboard: bool = True) -> Optional[list[TranscriptLine]]:
         video_id = self._ensure_video_id(url)
         languages = self._resolve_preferred_languages()
-        if self._transcript_fetcher is not None:
-            transcript = self._transcript_fetcher(video_id.value, languages)
-        else:
-            transcript = self._service.fetch(video_id, languages)
+        transcript = self._service.fetch(video_id, languages)
         if not transcript:
             return None
         if copy_to_clipboard:

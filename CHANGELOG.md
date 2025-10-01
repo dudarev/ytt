@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Changed
 - Refactored the CLI into domain, application, and infrastructure layers to better align with domain-driven design principles.
 - Introduced adapter services for configuration, clipboard, caching, and transcript retrieval to compose dependencies cleanly.
-- Added an ADR documenting the new layered architecture and package layout.
+- Added ADR 001 documenting the new layered architecture and package layout.
 
 
 ## [0.4.1] - 2025-06-21

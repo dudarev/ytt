@@ -34,20 +34,11 @@ def main() -> None:
     transcript_repository = CachedYouTubeTranscriptRepository(config_repository.cache_dir)
     transcript_service = TranscriptService(transcript_repository)
     clipboard = PyperclipClipboardGateway()
-    from importlib import import_module
-
-    package = import_module(__package__ or "ytt")
-    extractor = getattr(package, "extract_video_id")
-    languages_provider = lambda: package.load_config().get("preferred_languages", [])
-    transcript_fetcher = getattr(package, "get_transcript")
 
     fetch_use_case = FetchTranscriptUseCase(
         transcript_service,
-        config_repository,
+        config_service,
         clipboard,
-        extractor=extractor,
-        languages_provider=languages_provider,
-        transcript_fetcher=transcript_fetcher,
     )
 
     if args.command == "config":
