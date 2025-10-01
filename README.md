@@ -12,32 +12,63 @@ This tool wraps the [youtube-transcript-api](https://github.com/jdepoix/youtube-
 - Caches previously fetched transcripts to speed up repeated requests
 
 
-## Installation Globally 
+## Installation
 
-Consider installing `ytt` as a global command with [pipx](https://github.com/pypa/pipx):
+### Try it instantly with `uvx`
+
+[`uvx`](https://docs.astral.sh/uv/concepts/tools/#uvx) lets you run tools directly from a repository without installing them permanently:
 
 ```bash
-pipx install git+https://github.com/dudarev/ytt.git
+uvx --from git+https://github.com/dudarev/ytt.git ytt --help
 ```
 
+This downloads and executes the latest version of `ytt`. You can swap `--help` for any other command arguments.
 
-## Installation for Development
+### Global installs with `uv`
+
+Install the CLI globally when you want it always available on your PATH:
+
+```bash
+uv tool install --force --from git+https://github.com/dudarev/ytt.git ytt
+```
+
+The `--force` flag ensures you always get the latest version, even if the tool is already installed.
+
+If you prefer to install from a local checkout (for example, after building release artifacts), run the following from inside the repository directory:
+
+```bash
+uv tool install --force --from . ytt
+```
+
+### Develop from a local checkout
 
 1.  **Clone the repository (or download the source code):**
     ```bash
-    # If you have git installed
-    # git clone git@github.com:dudarev/ytt.git
-    # cd ytt
+    git clone https://github.com/dudarev/ytt.git
+    cd ytt
     ```
 
-2.  **Install the tool using pip or pipx:**
-    Navigate to the project directory (where `pyproject.toml` is located) in your terminal and run:
+2.  **Install the project along with its optional test dependencies:**
 
     ```bash
-    pip install -e .
+    uv pip install --reinstall -e .[test]
     ```
 
-    This installs the necessary dependencies (like `youtube-transcript-api` and `appdirs`) and makes the `ytt` command available in your current Python environment.
+    The `--reinstall` flag forces `uv` to refresh the editable install so you always develop against the current source. The `[test]` extra pulls in the tools required to run the test suite.
+
+    Alternatively, you can use the provided `Makefile` helpers:
+
+    ```bash
+    make            # shows available commands
+    make install-local   # installs the package in editable mode with test dependencies (forced reinstall)
+    make test            # runs the test suite via pytest
+    ```
+
+    To install the current checkout globally, use:
+
+    ```bash
+    make install-global
+    ```
 
 
 ## Usage
