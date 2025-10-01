@@ -1,45 +1,63 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
-  <title id="title">ytt project open graph image</title>
-  <desc id="desc">Hero image for the ytt repository showing brand colors and tagline.</desc>
+  <title id="title">ytt – fetch YouTube transcripts from the command line</title>
+  <desc id="desc">Promotional artwork for the ytt CLI highlighting multi-language transcript fetching, caching, and clipboard-ready output for YouTube videos.</desc>
   <defs>
     <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
       <stop offset="0%" stop-color="#0f172a" />
-      <stop offset="50%" stop-color="#312e81" />
-      <stop offset="100%" stop-color="#4c1d95" />
+      <stop offset="100%" stop-color="#1e293b" />
     </linearGradient>
-    <linearGradient id="glow" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.75" />
-      <stop offset="100%" stop-color="#a855f7" stop-opacity="0.9" />
+    <radialGradient id="spot" cx="70%" cy="30%" r="75%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.4" />
+      <stop offset="80%" stop-color="#38bdf8" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="highlight" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#f87171" />
+      <stop offset="100%" stop-color="#facc15" />
     </linearGradient>
     <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
-      <feDropShadow dx="0" dy="18" stdDeviation="28" flood-color="#111827" flood-opacity="0.45" />
+      <feDropShadow dx="0" dy="16" stdDeviation="24" flood-color="#020617" flood-opacity="0.45" />
     </filter>
   </defs>
 
-  <rect width="1200" height="630" fill="url(#bg)" rx="42" />
+  <rect width="1200" height="630" rx="48" fill="url(#bg)" />
+  <rect width="1200" height="630" rx="48" fill="url(#spot)" />
 
-  <g transform="translate(120, 105)">
-    <rect x="0" y="0" width="960" height="420" rx="36" fill="#0b1120" opacity="0.6" />
-    <rect x="24" y="24" width="912" height="372" rx="28" fill="rgba(15, 23, 42, 0.75)" stroke="rgba(148, 163, 184, 0.35)" stroke-width="2" />
-    <path d="M72 168c90-120 240-120 330 0s240 120 330 0" fill="none" stroke="url(#glow)" stroke-width="12" stroke-linecap="round" opacity="0.6" />
-    <circle cx="180" cy="228" r="96" fill="url(#glow)" opacity="0.4" />
-    <circle cx="768" cy="156" r="72" fill="url(#glow)" opacity="0.35" />
+  <g transform="translate(120, 120)">
+    <g filter="url(#shadow)">
+      <rect x="0" y="0" width="520" height="360" rx="28" fill="#0b1120" stroke="#1f2937" stroke-width="2" />
+      <rect x="24" y="56" width="472" height="256" rx="18" fill="#020617" stroke="#334155" stroke-width="2" />
+      <g transform="translate(48, 88)" font-family="'Fira Code', 'Source Code Pro', monospace" font-size="26" fill="#e2e8f0" letter-spacing="0.02em">
+        <text y="0">$ ytt https://youtu.be/&ZeroWidthSpace;dQw4w9WgXcQ</text>
+        <text y="54" fill="#38bdf8">✓ preferred language: en</text>
+        <text y="108" fill="#facc15">✓ fallback: auto-generated transcript</text>
+        <text y="162" fill="#bbf7d0">→ copied to clipboard</text>
+      </g>
+      <g transform="translate(24, 16)">
+        <circle cx="18" cy="16" r="6" fill="#ef4444" />
+        <circle cx="42" cy="16" r="6" fill="#facc15" />
+        <circle cx="66" cy="16" r="6" fill="#22c55e" />
+      </g>
+      <g transform="translate(400, 20)">
+        <rect x="0" y="0" width="96" height="32" rx="16" fill="#1e293b" />
+        <text x="48" y="22" font-family="'Inter', 'Segoe UI', sans-serif" font-size="18" fill="#cbd5f5" text-anchor="middle">cached</text>
+      </g>
+    </g>
 
-    <text x="60" y="156" font-family="'Inter', 'Segoe UI', sans-serif" font-size="54" fill="#a5b4fc" letter-spacing="0.12em" text-rendering="optimizeLegibility">YTT</text>
-    <text x="60" y="236" font-family="'Inter', 'Segoe UI', sans-serif" font-size="98" font-weight="700" fill="#f8fafc" text-rendering="optimizeLegibility">Streamlined YAML Templating</text>
-    <text x="60" y="312" font-family="'Inter', 'Segoe UI', sans-serif" font-size="36" fill="#cbd5f5" opacity="0.85" text-rendering="optimizeLegibility">
-      Build consistent infrastructure manifests with composable templates and guardrails.
-    </text>
-    <g transform="translate(60, 348)" filter="url(#shadow)">
-      <rect width="268" height="66" rx="18" fill="#38bdf8" />
-      <text x="134" y="44" font-family="'Inter', 'Segoe UI', sans-serif" font-size="30" font-weight="600" fill="#0f172a" text-anchor="middle">
-        Get started now
-      </text>
+    <g transform="translate(560, 0)">
+      <text x="0" y="24" font-family="'Inter', 'Segoe UI', sans-serif" font-size="28" fill="#94a3b8" letter-spacing="0.4em">YTT</text>
+      <text x="0" y="104" font-family="'Inter', 'Segoe UI', sans-serif" font-size="88" font-weight="700" fill="#f8fafc" letter-spacing="0.01em">YouTube Transcript Tool</text>
+      <rect x="0" y="134" width="420" height="6" fill="url(#highlight)" rx="3" />
+      <text x="0" y="212" font-family="'Inter', 'Segoe UI', sans-serif" font-size="34" fill="#e0f2fe">CLI for fetching captions in your preferred languages</text>
+      <g font-family="'Inter', 'Segoe UI', sans-serif" font-size="26" fill="#cbd5f5" opacity="0.9" transform="translate(0, 252)">
+        <text y="0">• Intelligent language prioritization</text>
+        <text y="48">• Falls back to auto transcripts when needed</text>
+        <text y="96">• Cache-aware & clipboard-friendly output</text>
+      </g>
     </g>
   </g>
 
-  <g transform="translate(840, 420)">
-    <path d="M0 -54 L54 0 L0 54 L-54 0 Z" fill="none" stroke="#22d3ee" stroke-width="4" opacity="0.7" />
-    <path d="M0 -84 L84 0 L0 84 L-84 0 Z" fill="none" stroke="#a855f7" stroke-width="3" opacity="0.55" />
+  <g transform="translate(1020, 520)">
+    <circle cx="0" cy="0" r="68" fill="none" stroke="#38bdf8" stroke-width="4" opacity="0.55" />
+    <path d="M-22 -30 L24 0 L-22 30 Z" fill="#ef4444" />
   </g>
 </svg>
