@@ -95,6 +95,36 @@ class TestYttClipboard(unittest.TestCase):
         self.assertIn("Warning: Could not copy to clipboard: Mock clipboard error", mock_stderr.getvalue())
         self.assertIn(self.expected_transcript_string, mock_stdout.getvalue().replace('\\n', '\n'))
 
+class TestTranscriptRepository(unittest.TestCase):
+    """Test the transcript repository with FetchedTranscriptSnippet objects."""
+    
+    def test_to_transcript_with_fetched_snippet_objects(self):
+        """Test that _to_transcript handles FetchedTranscriptSnippet objects correctly."""
+        from ytt.infrastructure.transcript_repository import CachedYouTubeTranscriptRepository
+        
+        # Mock FetchedTranscriptSnippet objects
+        class MockFetchedTranscriptSnippet:
+            def __init__(self, text, start, duration):
+                self.text = text
+                self.start = start
+                self.duration = duration
+        
+        snippets = [
+            MockFetchedTranscriptSnippet("Hello world", 0.0, 3.5),
+            MockFetchedTranscriptSnippet("This is a test", 3.5, 2.1),
+        ]
+        
+        result = CachedYouTubeTranscriptRepository._to_transcript(snippets)
+        
+        self.assertEqual(len(result), 2)
+        self.assertEqual(result[0].text, "Hello world")
+        self.assertEqual(result[0].start, 0.0)
+        self.assertEqual(result[0].duration, 3.5)
+        self.assertEqual(result[1].text, "This is a test")
+        self.assertEqual(result[1].start, 3.5)
+        self.assertEqual(result[1].duration, 2.1)
+
+
 if __name__ == '__main__':
     # Create tests directory if it doesn't exist
     if not Path('tests').exists():

@@ -116,11 +116,11 @@ class CachedYouTubeTranscriptRepository(TranscriptRepository):
         raise NoTranscriptFound("No suitable transcript found in the list.")
 
     @staticmethod
-    def _to_transcript(entries: Iterable[dict]) -> list[TranscriptLine]:
+    def _to_transcript(entries: Iterable) -> list[TranscriptLine]:
         transcript: list[TranscriptLine] = []
         for entry in entries:
-            text = entry.get("text", "")
-            start = float(entry.get("start", 0.0))
-            duration = float(entry.get("duration", 0.0))
+            text = entry.text
+            start = float(entry.start)
+            duration = float(entry.duration)
             transcript.append(TranscriptLine(text=text, start=start, duration=duration))
         return transcript

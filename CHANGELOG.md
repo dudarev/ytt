@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [0.4.3] - 2025-10-01
+
+### Fixed
+- Fixed compatibility with youtube-transcript-api v1.1.0+ which changed return format from dict objects to FetchedTranscriptSnippet objects
+- Updated transcript repository to use FetchedTranscriptSnippet objects with .text, .start, and .duration attributes
+- Added test to verify FetchedTranscriptSnippet format works correctly
+
 ## [0.4.2] - 2025-06-22
 
 ### Changed
