@@ -7,8 +7,8 @@
 - Ensure the description comes from the structured JSON payload (e.g., `description.simpleText`) with graceful fallbacks when unavailable.
 - Provide CLI and library-level configuration flags to disable adding the title and/or description when consumers prefer transcript-only output.
 - Maintain compatibility with existing transcript retrieval flows and error handling paths.
-- Cache the resolved title and description alongside the transcript so repeat requests for the same video reuse previously fetc
-hed metadata without additional network calls.
+- Cache the resolved title and description alongside the transcript so repeat requests for the same video reuse previously fetched metadata without additional network calls.
+- Release the feature as a minor version bump (e.g., 0.4 → 0.5) to reflect the added functionality and metadata caching requirements.
 
 ### Success Metrics
 - Title and description appear for at least 95% of sampled public YouTube videos where the transcript is available.
