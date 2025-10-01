@@ -51,7 +51,7 @@
       <g font-family="'Inter', 'Segoe UI', sans-serif" font-size="26" fill="#cbd5f5" opacity="0.9" transform="translate(0, 252)">
         <text y="0">• Intelligent language prioritization</text>
         <text y="48">• Falls back to auto transcripts when needed</text>
-        <text y="96">• Cache-aware & clipboard-friendly output</text>
+        <text y="96">• Cache-aware &amp; clipboard-friendly output</text>
       </g>
     </g>
   </g>
