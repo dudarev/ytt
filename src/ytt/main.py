@@ -54,13 +54,15 @@ def main() -> None:
             print(f"Error: Unknown config setting '{args.setting}'. Only 'languages' is supported.", file=sys.stderr)
             raise SystemExit(1)
     elif args.command == "fetch":
+        show_title = not (args.no_title or args.no_metadata)
+        show_description = not (args.no_description or args.no_metadata)
         bundle = fetch_use_case.execute(
             args.youtube_url,
             copy_to_clipboard=not args.no_copy,
+            show_title=show_title,
+            show_description=show_description,
         )
         if bundle:
-            show_title = not (args.no_title or args.no_metadata)
-            show_description = not (args.no_description or args.no_metadata)
             FetchTranscriptUseCase.render(
                 bundle,
                 show_title=show_title,

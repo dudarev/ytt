@@ -53,6 +53,8 @@ class FetchTranscriptUseCase:
         url: str,
         *,
         copy_to_clipboard: bool = True,
+        show_title: bool = True,
+        show_description: bool = True,
     ) -> Optional[VideoTranscriptBundle]:
         video_id = self._ensure_video_id(url)
         languages = self._resolve_preferred_languages()
@@ -60,8 +62,37 @@ class FetchTranscriptUseCase:
         if not bundle:
             return None
         if copy_to_clipboard:
-            self._clipboard.copy(line.text for line in bundle.transcript)
+            lines = self.render_lines(
+                bundle,
+                show_title=show_title,
+                show_description=show_description,
+            )
+            self._clipboard.copy(lines)
         return bundle
+
+    @staticmethod
+    def render_lines(
+        bundle: Optional[VideoTranscriptBundle],
+        *,
+        show_title: bool = True,
+        show_description: bool = True,
+    ) -> list[str]:
+        if not bundle:
+            return []
+        metadata = bundle.metadata
+        lines: list[str] = []
+        if show_title and metadata.title:
+            lines.append(f"# {metadata.title}")
+            lines.append("")
+        if show_description and metadata.description:
+            lines.append("## Description")
+            lines.append("")
+            lines.append(metadata.description)
+            lines.append("")
+        lines.append("## Transcript")
+        lines.append("")
+        lines.extend(line.text for line in bundle.transcript)
+        return lines
 
     @staticmethod
     def render(
@@ -70,18 +101,9 @@ class FetchTranscriptUseCase:
         show_title: bool = True,
         show_description: bool = True,
     ) -> None:
-        if not bundle:
-            return
-        metadata = bundle.metadata
-        if show_title and metadata.title:
-            print(f"# {metadata.title}")
-            print()
-        if show_description and metadata.description:
-            print("## Description")
-            print()
-            print(metadata.description)
-            print()
-        print("## Transcript")
-        print()
-        for line in bundle.transcript:
-            print(line.text)
+        for line in FetchTranscriptUseCase.render_lines(
+            bundle,
+            show_title=show_title,
+            show_description=show_description,
+        ):
+            print(line)
