@@ -3,9 +3,14 @@
 from __future__ import annotations
 
 import sys
-from typing import Callable, Iterable, Optional, Sequence
+from typing import Callable, Optional, Sequence
 
-from ..domain import TranscriptLine, TranscriptService, VideoID, extract_video_id
+from ..domain import (
+    TranscriptService,
+    VideoID,
+    VideoTranscriptBundle,
+    extract_video_id,
+)
 from ..infrastructure.clipboard import ClipboardGateway
 from .config_service import ConfigService
 
@@ -43,19 +48,36 @@ class FetchTranscriptUseCase:
             return video_id
         return VideoID(str(video_id))
 
-    def execute(self, url: str, copy_to_clipboard: bool = True) -> Optional[list[TranscriptLine]]:
+    def execute(
+        self,
+        url: str,
+        *,
+        copy_to_clipboard: bool = True,
+    ) -> Optional[VideoTranscriptBundle]:
         video_id = self._ensure_video_id(url)
         languages = self._resolve_preferred_languages()
-        transcript = self._service.fetch(video_id, languages)
-        if not transcript:
+        bundle = self._service.fetch(video_id, languages)
+        if not bundle:
             return None
         if copy_to_clipboard:
-            self._clipboard.copy(line.text for line in transcript)
-        return transcript
+            self._clipboard.copy(line.text for line in bundle.transcript)
+        return bundle
 
     @staticmethod
-    def render(transcript: Optional[Iterable[TranscriptLine]]) -> None:
-        if not transcript:
+    def render(
+        bundle: Optional[VideoTranscriptBundle],
+        *,
+        show_title: bool = True,
+        show_description: bool = True,
+    ) -> None:
+        if not bundle:
             return
-        for line in transcript:
+        metadata = bundle.metadata
+        if show_title and metadata.title:
+            print(metadata.title)
+            print()
+        if show_description and metadata.description:
+            print(metadata.description)
+            print()
+        for line in bundle.transcript:
             print(line.text)

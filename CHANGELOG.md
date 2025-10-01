@@ -6,6 +6,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [0.5.0] - 2025-10-01
+
+### Added
+- Display the YouTube video title and description ahead of transcripts in the CLI with new opt-out flags for each field and all metadata.
+- Cache metadata alongside transcripts to reuse previously fetched titles and descriptions.
+
+### Changed
+- Introduced a metadata gateway and transcript bundle domain model so metadata and transcripts are fetched together.
+
 ## [0.4.5] - 2025-10-08
 
 ### Added

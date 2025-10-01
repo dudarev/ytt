@@ -33,6 +33,21 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Do not copy the transcript to the clipboard.",
     )
+    fetch_parser.add_argument(
+        "--no-title",
+        action="store_true",
+        help="Do not print the video title before the transcript.",
+    )
+    fetch_parser.add_argument(
+        "--no-description",
+        action="store_true",
+        help="Do not print the video description before the transcript.",
+    )
+    fetch_parser.add_argument(
+        "--no-metadata",
+        action="store_true",
+        help="Disable both title and description output.",
+    )
 
     config_parser = subparsers.add_parser("config", help="Configure ytt settings.")
     config_parser.add_argument(

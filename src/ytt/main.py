@@ -11,6 +11,7 @@ from .infrastructure import (
     CachedYouTubeTranscriptRepository,
     ConfigRepository,
     PyperclipClipboardGateway,
+    YouTubeMetadataGateway,
 )
 
 
@@ -31,7 +32,11 @@ def main() -> None:
 
     config_repository = ConfigRepository()
     config_service = ConfigService(config_repository)
-    transcript_repository = CachedYouTubeTranscriptRepository(config_repository.cache_dir)
+    metadata_gateway = YouTubeMetadataGateway()
+    transcript_repository = CachedYouTubeTranscriptRepository(
+        config_repository.cache_dir,
+        metadata_gateway,
+    )
     transcript_service = TranscriptService(transcript_repository)
     clipboard = PyperclipClipboardGateway()
 
@@ -49,9 +54,18 @@ def main() -> None:
             print(f"Error: Unknown config setting '{args.setting}'. Only 'languages' is supported.", file=sys.stderr)
             raise SystemExit(1)
     elif args.command == "fetch":
-        transcript = fetch_use_case.execute(args.youtube_url, copy_to_clipboard=not args.no_copy)
-        if transcript:
-            FetchTranscriptUseCase.render(transcript)
+        bundle = fetch_use_case.execute(
+            args.youtube_url,
+            copy_to_clipboard=not args.no_copy,
+        )
+        if bundle:
+            show_title = not (args.no_title or args.no_metadata)
+            show_description = not (args.no_description or args.no_metadata)
+            FetchTranscriptUseCase.render(
+                bundle,
+                show_title=show_title,
+                show_description=show_description,
+            )
         else:
             raise SystemExit(1)
     else:  # pragma: no cover - defensive guard

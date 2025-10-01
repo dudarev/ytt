@@ -13,18 +13,23 @@ from youtube_transcript_api import (
     YouTubeTranscriptApi,
 )
 
-from ..domain.entities import TranscriptLine
-from ..domain.services import TranscriptRepository
+from ..domain.entities import TranscriptLine, VideoMetadata, VideoTranscriptBundle
+from ..domain.services import MetadataGateway, TranscriptRepository
 from ..domain.value_objects import VideoID
 
 
 class CachedYouTubeTranscriptRepository(TranscriptRepository):
     """Repository that stores transcripts locally and falls back to the API."""
 
-    def __init__(self, cache_dir: Path) -> None:
-        self._cache_dir = cache_dir
+    CACHE_VERSION = 2
 
-    def retrieve(self, video_id: VideoID, preferred_languages: Sequence[str]) -> Optional[list[TranscriptLine]]:
+    def __init__(self, cache_dir: Path, metadata_gateway: MetadataGateway) -> None:
+        self._cache_dir = cache_dir
+        self._metadata_gateway = metadata_gateway
+
+    def retrieve(
+        self, video_id: VideoID, preferred_languages: Sequence[str]
+    ) -> Optional[VideoTranscriptBundle]:
         cache_path = self._cache_path(video_id, preferred_languages)
 
         if cache_path.exists():
@@ -35,8 +40,12 @@ class CachedYouTubeTranscriptRepository(TranscriptRepository):
         transcript_data = self._fetch_from_api(video_id, preferred_languages)
         if transcript_data is not None:
             transcript = self._to_transcript(transcript_data)
-            self._save_cache(cache_path, transcript)
-            return transcript
+            metadata = self._metadata_gateway.fetch(video_id)
+            bundle = VideoTranscriptBundle(
+                transcript=transcript, metadata=metadata
+            )
+            self._save_cache(cache_path, bundle)
+            return bundle
         return None
 
     def _cache_path(self, video_id: VideoID, preferred_languages: Sequence[str]) -> Path:
@@ -44,23 +53,58 @@ class CachedYouTubeTranscriptRepository(TranscriptRepository):
         lang_key = "_".join(languages) if languages else "any"
         return self._cache_dir / f"{video_id.value}_{lang_key}.pkl"
 
-    def _load_cache(self, cache_path: Path) -> Optional[list[TranscriptLine]]:
+    def _load_cache(self, cache_path: Path) -> Optional[VideoTranscriptBundle]:
         try:
             with open(cache_path, "rb") as handle:
-                return pickle.load(handle)
+                payload = pickle.load(handle)
         except pickle.UnpicklingError:
             print(f"Warning: Could not unpickle cache file {cache_path}. Fetching again.", file=sys.stderr)
+            return None
         except FileNotFoundError:
             print(f"Warning: Cache file not found {cache_path} despite check. Fetching again.", file=sys.stderr)
+            return None
         except Exception as exc:  # pragma: no cover - defensive
             print(f"Warning: Error reading cache file {cache_path}: {exc}. Fetching again.", file=sys.stderr)
+            return None
+
+        if isinstance(payload, VideoTranscriptBundle):
+            return payload
+
+        if isinstance(payload, dict):
+            version = payload.get("version")
+            transcript = payload.get("transcript")
+            metadata_dict = payload.get("metadata", {})
+            if version == self.CACHE_VERSION and isinstance(transcript, list):
+                metadata = VideoMetadata(
+                    title=metadata_dict.get("title"),
+                    description=metadata_dict.get("description"),
+                )
+                return VideoTranscriptBundle(
+                    transcript=transcript,
+                    metadata=metadata,
+                )
+
+        if isinstance(payload, list) and all(
+            isinstance(item, TranscriptLine) for item in payload
+        ):
+            metadata = VideoMetadata(title=None, description=None)
+            return VideoTranscriptBundle(transcript=payload, metadata=metadata)
+
         return None
 
-    def _save_cache(self, cache_path: Path, transcript: list[TranscriptLine]) -> None:
+    def _save_cache(self, cache_path: Path, bundle: VideoTranscriptBundle) -> None:
         try:
             cache_path.parent.mkdir(parents=True, exist_ok=True)
             with open(cache_path, "wb") as handle:
-                pickle.dump(transcript, handle)
+                payload = {
+                    "version": self.CACHE_VERSION,
+                    "transcript": bundle.transcript,
+                    "metadata": {
+                        "title": bundle.metadata.title,
+                        "description": bundle.metadata.description,
+                    },
+                }
+                pickle.dump(payload, handle)
         except Exception as exc:  # pragma: no cover - defensive
             print(f"Warning: Could not save transcript to cache file {cache_path}: {exc}", file=sys.stderr)
 
