@@ -1,16 +1,18 @@
 .DEFAULT_GOAL := help
 
-.PHONY: install-global install-local test help
+.PHONY: install-global install-local uninstall-global test help
 
 UV ?= uv
 PACKAGE := ytt
-GIT_URL := git+https://github.com/dudarev/ytt.git
 
-install-global: ## Install ytt globally using uv from the GitHub repository (forced reinstall)
-	$(UV) tool install --force --from $(GIT_URL) $(PACKAGE)
+install-global: ## Install ytt globally from the current checkout (forced reinstall)
+	$(UV) tool install --force --from . $(PACKAGE)
 
 install-local: ## Install ytt in editable mode with test extras (forced reinstall)
 	$(UV) pip install --reinstall -e .[test]
+
+uninstall-global: ## Uninstall the globally installed ytt tool
+	$(UV) tool uninstall $(PACKAGE)
 
 test: ## Run the test suite with pytest
 	$(UV) run pytest

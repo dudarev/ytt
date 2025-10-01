@@ -40,6 +40,12 @@ If you prefer to install from a local checkout (for example, after building rele
 uv tool install --force --from . ytt
 ```
 
+You can remove a global installation at any time with:
+
+```bash
+uv tool uninstall ytt
+```
+
 ### Develop from a local checkout
 
 1.  **Clone the repository (or download the source code):**
@@ -60,14 +66,10 @@ uv tool install --force --from . ytt
 
     ```bash
     make            # shows available commands
-    make install-local   # installs the package in editable mode with test dependencies (forced reinstall)
-    make test            # runs the test suite via pytest
-    ```
-
-    To install the current checkout globally, use:
-
-    ```bash
-    make install-global
+    make install-local       # installs the package in editable mode with test dependencies (forced reinstall)
+    make install-global      # installs the current checkout globally (forced reinstall)
+    make uninstall-global    # removes the globally installed ytt tool
+    make test                # runs the test suite via pytest
     ```
 
 
