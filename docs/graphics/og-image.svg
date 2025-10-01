@@ -43,15 +43,18 @@
       </g>
     </g>
 
-    <g transform="translate(560, 0)">
+    <g transform="translate(520, 0)">
       <text x="0" y="24" font-family="'Inter', 'Segoe UI', sans-serif" font-size="28" fill="#94a3b8" letter-spacing="0.4em">YTT</text>
-      <text x="0" y="104" font-family="'Inter', 'Segoe UI', sans-serif" font-size="88" font-weight="700" fill="#f8fafc" letter-spacing="0.01em">YouTube Transcript Tool</text>
-      <rect x="0" y="134" width="420" height="6" fill="url(#highlight)" rx="3" />
-      <text x="0" y="212" font-family="'Inter', 'Segoe UI', sans-serif" font-size="34" fill="#e0f2fe">CLI for fetching captions in your preferred languages</text>
-      <g font-family="'Inter', 'Segoe UI', sans-serif" font-size="26" fill="#cbd5f5" opacity="0.9" transform="translate(0, 252)">
-        <text y="0">• Intelligent language prioritization</text>
-        <text y="48">• Falls back to auto transcripts when needed</text>
-        <text y="96">• Cache-aware &amp; clipboard-friendly output</text>
+      <text x="0" y="104" font-family="'Inter', 'Segoe UI', sans-serif" font-size="78" font-weight="700" fill="#f8fafc" letter-spacing="0.02em">
+        YouTube transcripts
+        <tspan x="0" dy="68">on your terms</tspan>
+      </text>
+      <rect x="0" y="180" width="360" height="6" fill="url(#highlight)" rx="3" />
+      <text x="0" y="248" font-family="'Inter', 'Segoe UI', sans-serif" font-size="32" fill="#e0f2fe">CLI control over caption languages</text>
+      <g font-family="'Inter', 'Segoe UI', sans-serif" font-size="24" fill="#cbd5f5" opacity="0.9" transform="translate(0, 288)">
+        <text y="0">• Rank preferred locales</text>
+        <text y="44">• Cache saves repeat fetches</text>
+        <text y="88">• Clipboard-ready results</text>
       </g>
     </g>
   </g>
