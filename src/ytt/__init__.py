@@ -15,6 +15,9 @@ from .infrastructure import (
     PyperclipClipboardGateway,
 )
 from .main import main
+from .version import get_version
+
+__version__ = get_version()
 
 __all__ = [
     "main",
@@ -26,6 +29,7 @@ __all__ = [
     "save_config",
     "get_transcript",
     "copy_to_clipboard",
+    "__version__",
 ]
 
 
