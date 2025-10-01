@@ -4,10 +4,11 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ytt"
-version = "0.4.3"
+version = "0.4.4"
 description = "A simple CLI tool to fetch YouTube video transcripts."
 readme = "README.md"
 requires-python = ">=3.12"
+authors = [{ name = "Artem Dudarev" }]
 classifiers = [
     "Programming Language :: Python :: 3",
     "License :: OSI Approved :: MIT License",
@@ -19,6 +20,11 @@ dependencies = [
     "youtube-transcript-api~=1.1.0",
     "appdirs~=1.4.4",
     "pyperclip~=1.9.0",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=8.0",
 ]
 
 [project.scripts]
