@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 630" role="img" aria-labelledby="title desc">
+  <title id="title">ytt project open graph image</title>
+  <desc id="desc">Hero image for the ytt repository showing brand colors and tagline.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0f172a" />
+      <stop offset="50%" stop-color="#312e81" />
+      <stop offset="100%" stop-color="#4c1d95" />
+    </linearGradient>
+    <linearGradient id="glow" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.75" />
+      <stop offset="100%" stop-color="#a855f7" stop-opacity="0.9" />
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="18" stdDeviation="28" flood-color="#111827" flood-opacity="0.45" />
+    </filter>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)" rx="42" />
+
+  <g transform="translate(120, 105)">
+    <rect x="0" y="0" width="960" height="420" rx="36" fill="#0b1120" opacity="0.6" />
+    <rect x="24" y="24" width="912" height="372" rx="28" fill="rgba(15, 23, 42, 0.75)" stroke="rgba(148, 163, 184, 0.35)" stroke-width="2" />
+    <path d="M72 168c90-120 240-120 330 0s240 120 330 0" fill="none" stroke="url(#glow)" stroke-width="12" stroke-linecap="round" opacity="0.6" />
+    <circle cx="180" cy="228" r="96" fill="url(#glow)" opacity="0.4" />
+    <circle cx="768" cy="156" r="72" fill="url(#glow)" opacity="0.35" />
+
+    <text x="60" y="156" font-family="'Inter', 'Segoe UI', sans-serif" font-size="54" fill="#a5b4fc" letter-spacing="0.12em" text-rendering="optimizeLegibility">YTT</text>
+    <text x="60" y="236" font-family="'Inter', 'Segoe UI', sans-serif" font-size="98" font-weight="700" fill="#f8fafc" text-rendering="optimizeLegibility">Streamlined YAML Templating</text>
+    <text x="60" y="312" font-family="'Inter', 'Segoe UI', sans-serif" font-size="36" fill="#cbd5f5" opacity="0.85" text-rendering="optimizeLegibility">
+      Build consistent infrastructure manifests with composable templates and guardrails.
+    </text>
+    <g transform="translate(60, 348)" filter="url(#shadow)">
+      <rect width="268" height="66" rx="18" fill="#38bdf8" />
+      <text x="134" y="44" font-family="'Inter', 'Segoe UI', sans-serif" font-size="30" font-weight="600" fill="#0f172a" text-anchor="middle">
+        Get started now
+      </text>
+    </g>
+  </g>
+
+  <g transform="translate(840, 420)">
+    <path d="M0 -54 L54 0 L0 54 L-54 0 Z" fill="none" stroke="#22d3ee" stroke-width="4" opacity="0.7" />
+    <path d="M0 -84 L84 0 L0 84 L-84 0 Z" fill="none" stroke="#a855f7" stroke-width="3" opacity="0.55" />
+  </g>
+</svg>
