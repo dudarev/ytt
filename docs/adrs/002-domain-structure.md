@@ -1,4 +1,4 @@
-# ADR 001: Domain-driven package structure
+# ADR 002: Domain-driven package structure
 
 ## Status
 
