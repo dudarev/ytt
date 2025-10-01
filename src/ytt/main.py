@@ -17,12 +17,12 @@ from .infrastructure import (
 
 def _prepare_args(argv: List[str]):
     parser = build_parser()
-    if not argv or argv[0] not in {"fetch", "config"}:
-        if argv and ("http://" in argv[0] or "https://" in argv[0]):
+    if argv and argv[0] not in {"fetch", "config"}:
+        if "http://" in argv[0] or "https://" in argv[0]:
             argv = ["fetch", *argv]
-        else:
-            parser.print_help(sys.stderr)
-            raise SystemExit(1)
+    if not argv:
+        parser.print_help(sys.stderr)
+        raise SystemExit(1)
     return parser, parser.parse_args(argv)
 
 

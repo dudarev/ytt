@@ -6,6 +6,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [0.5.1] - 2025-10-01
+
+### Changed
+- Render fetched transcripts in Markdown, including a level-one title, description section header, and transcript section header.
+
+### Fixed
+- Allow the `-V`/`--version` flag to work without requiring a subcommand so the CLI prints the version as expected.
+
 ## [0.5.0] - 2025-10-01
 
 ### Added

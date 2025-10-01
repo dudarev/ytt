@@ -74,10 +74,14 @@ class FetchTranscriptUseCase:
             return
         metadata = bundle.metadata
         if show_title and metadata.title:
-            print(metadata.title)
+            print(f"# {metadata.title}")
             print()
         if show_description and metadata.description:
+            print("## Description")
+            print()
             print(metadata.description)
             print()
+        print("## Transcript")
+        print()
         for line in bundle.transcript:
             print(line.text)

@@ -33,6 +33,9 @@ class TestYttClipboard(unittest.TestCase):
             transcript=self.sample_transcript_data,
             metadata=self.sample_metadata,
         )
+        self.expected_title_header = f"# {self.sample_metadata.title}"
+        self.expected_description_header = "## Description"
+        self.expected_transcript_header = "## Transcript"
 
     @patch('ytt.pyperclip.copy')
     @patch('ytt.domain.services.TranscriptService.fetch') # Mock fetching the transcript
@@ -55,8 +58,10 @@ class TestYttClipboard(unittest.TestCase):
         mock_fetch_transcript.assert_called_once()
         mock_pyperclip_copy.assert_called_once_with(self.expected_transcript_string)
         stdout_value = mock_stdout.getvalue().replace('\\n', '\n')
+        self.assertIn(self.expected_transcript_header, stdout_value)
         self.assertIn(self.expected_transcript_string, stdout_value)
-        self.assertIn(self.sample_metadata.title, stdout_value)
+        self.assertIn(self.expected_title_header, stdout_value)
+        self.assertIn(self.expected_description_header, stdout_value)
         self.assertIn(self.sample_metadata.description, stdout_value)
 
 
@@ -80,8 +85,10 @@ class TestYttClipboard(unittest.TestCase):
         mock_fetch_transcript.assert_called_once()
         mock_pyperclip_copy.assert_not_called()
         stdout_value = mock_stdout.getvalue().replace('\\n', '\n')
+        self.assertIn(self.expected_transcript_header, stdout_value)
         self.assertIn(self.expected_transcript_string, stdout_value)
-        self.assertIn(self.sample_metadata.title, stdout_value)
+        self.assertIn(self.expected_title_header, stdout_value)
+        self.assertIn(self.expected_description_header, stdout_value)
         self.assertIn(self.sample_metadata.description, stdout_value)
 
     @patch('ytt.pyperclip.copy')
@@ -104,8 +111,11 @@ class TestYttClipboard(unittest.TestCase):
         mock_fetch_transcript.assert_called_once()
         mock_pyperclip_copy.assert_called_once_with(self.expected_transcript_string)
         stdout_value = mock_stdout.getvalue().replace('\\n', '\n')
+        self.assertIn(self.expected_transcript_header, stdout_value)
+        self.assertIn(self.expected_transcript_string, stdout_value)
+        self.assertIn(self.expected_description_header, stdout_value)
         self.assertIn(self.sample_metadata.description, stdout_value)
-        self.assertNotIn(self.sample_metadata.title, stdout_value)
+        self.assertNotIn(self.expected_title_header, stdout_value)
 
     @patch('ytt.pyperclip.copy')
     @patch('ytt.domain.services.TranscriptService.fetch')
@@ -127,7 +137,10 @@ class TestYttClipboard(unittest.TestCase):
         mock_fetch_transcript.assert_called_once()
         mock_pyperclip_copy.assert_called_once_with(self.expected_transcript_string)
         stdout_value = mock_stdout.getvalue().replace('\\n', '\n')
-        self.assertIn(self.sample_metadata.title, stdout_value)
+        self.assertIn(self.expected_transcript_header, stdout_value)
+        self.assertIn(self.expected_transcript_string, stdout_value)
+        self.assertIn(self.expected_title_header, stdout_value)
+        self.assertNotIn(self.expected_description_header, stdout_value)
         self.assertNotIn(self.sample_metadata.description, stdout_value)
 
     @patch('ytt.pyperclip.copy')
@@ -150,9 +163,12 @@ class TestYttClipboard(unittest.TestCase):
         mock_fetch_transcript.assert_called_once()
         mock_pyperclip_copy.assert_called_once_with(self.expected_transcript_string)
         stdout_value = mock_stdout.getvalue().replace('\\n', '\n')
+        self.assertIn(self.expected_transcript_header, stdout_value)
+        self.assertIn(self.expected_transcript_string, stdout_value)
+        self.assertNotIn(self.expected_title_header, stdout_value)
+        self.assertNotIn(self.expected_description_header, stdout_value)
         self.assertNotIn(self.sample_metadata.title, stdout_value)
         self.assertNotIn(self.sample_metadata.description, stdout_value)
-        self.assertIn(self.expected_transcript_string, stdout_value)
 
     @patch('ytt.pyperclip.copy', side_effect=pyperclip.PyperclipException("Mock clipboard error"))
     @patch('ytt.domain.services.TranscriptService.fetch')
@@ -177,8 +193,10 @@ class TestYttClipboard(unittest.TestCase):
         # The error message in ytt.py was updated to be more specific
         self.assertIn("Warning: Could not copy to clipboard: Mock clipboard error", mock_stderr.getvalue())
         stdout_value = mock_stdout.getvalue().replace('\\n', '\n')
+        self.assertIn(self.expected_transcript_header, stdout_value)
         self.assertIn(self.expected_transcript_string, stdout_value)
-        self.assertIn(self.sample_metadata.title, stdout_value)
+        self.assertIn(self.expected_title_header, stdout_value)
+        self.assertIn(self.expected_description_header, stdout_value)
         self.assertIn(self.sample_metadata.description, stdout_value)
 
     def test_version_flag_outputs_version(self):
@@ -189,6 +207,14 @@ class TestYttClipboard(unittest.TestCase):
         with patch('sys.stdout', new_callable=io.StringIO) as mock_stdout:
             with self.assertRaises(SystemExit) as exit_context:
                 parser.parse_args(['--version'])
+
+        self.assertEqual(exit_context.exception.code, 0)
+        self.assertIn(ytt.__version__, mock_stdout.getvalue())
+
+        with patch('sys.stdout', new_callable=io.StringIO) as mock_stdout:
+            with self.assertRaises(SystemExit) as exit_context:
+                with patch.object(sys, 'argv', ['ytt.py', '-V']):
+                    ytt.main()
 
         self.assertEqual(exit_context.exception.code, 0)
         self.assertIn(ytt.__version__, mock_stdout.getvalue())
