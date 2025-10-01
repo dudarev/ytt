@@ -95,6 +95,18 @@ class TestYttClipboard(unittest.TestCase):
         self.assertIn("Warning: Could not copy to clipboard: Mock clipboard error", mock_stderr.getvalue())
         self.assertIn(self.expected_transcript_string, mock_stdout.getvalue().replace('\\n', '\n'))
 
+    def test_version_flag_outputs_version(self):
+        from ytt.application import build_parser
+
+        parser = build_parser()
+
+        with patch('sys.stdout', new_callable=io.StringIO) as mock_stdout:
+            with self.assertRaises(SystemExit) as exit_context:
+                parser.parse_args(['--version'])
+
+        self.assertEqual(exit_context.exception.code, 0)
+        self.assertIn(ytt.__version__, mock_stdout.getvalue())
+
 class TestTranscriptRepository(unittest.TestCase):
     """Test the transcript repository with FetchedTranscriptSnippet objects."""
     

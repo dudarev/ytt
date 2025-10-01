@@ -4,11 +4,21 @@ from __future__ import annotations
 
 import argparse
 
+from ..version import get_version
+
 
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="Fetch YouTube video transcripts or manage configuration.",
         usage="ytt <youtube_url> | ytt config <setting> <value>",
+    )
+
+    parser.add_argument(
+        "-V",
+        "--version",
+        action="version",
+        version=f"%(prog)s {get_version()}",
+        help="Show the ytt version and exit.",
     )
 
     subparsers = parser.add_subparsers(dest="command", help="Available commands")
