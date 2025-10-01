@@ -3,9 +3,14 @@
 from __future__ import annotations
 
 import sys
-from typing import Callable, Iterable, Optional, Sequence
+from typing import Callable, Optional, Sequence
 
-from ..domain import TranscriptLine, TranscriptService, VideoID, extract_video_id
+from ..domain import (
+    TranscriptService,
+    VideoID,
+    VideoTranscriptBundle,
+    extract_video_id,
+)
 from ..infrastructure.clipboard import ClipboardGateway
 from .config_service import ConfigService
 
@@ -43,19 +48,62 @@ class FetchTranscriptUseCase:
             return video_id
         return VideoID(str(video_id))
 
-    def execute(self, url: str, copy_to_clipboard: bool = True) -> Optional[list[TranscriptLine]]:
+    def execute(
+        self,
+        url: str,
+        *,
+        copy_to_clipboard: bool = True,
+        show_title: bool = True,
+        show_description: bool = True,
+    ) -> Optional[VideoTranscriptBundle]:
         video_id = self._ensure_video_id(url)
         languages = self._resolve_preferred_languages()
-        transcript = self._service.fetch(video_id, languages)
-        if not transcript:
+        bundle = self._service.fetch(video_id, languages)
+        if not bundle:
             return None
         if copy_to_clipboard:
-            self._clipboard.copy(line.text for line in transcript)
-        return transcript
+            lines = self.render_lines(
+                bundle,
+                show_title=show_title,
+                show_description=show_description,
+            )
+            self._clipboard.copy(lines)
+        return bundle
 
     @staticmethod
-    def render(transcript: Optional[Iterable[TranscriptLine]]) -> None:
-        if not transcript:
-            return
-        for line in transcript:
-            print(line.text)
+    def render_lines(
+        bundle: Optional[VideoTranscriptBundle],
+        *,
+        show_title: bool = True,
+        show_description: bool = True,
+    ) -> list[str]:
+        if not bundle:
+            return []
+        metadata = bundle.metadata
+        lines: list[str] = []
+        if show_title and metadata.title:
+            lines.append(f"# {metadata.title}")
+            lines.append("")
+        if show_description and metadata.description:
+            lines.append("## Description")
+            lines.append("")
+            lines.append(metadata.description)
+            lines.append("")
+        lines.append("## Transcript")
+        lines.append("")
+        lines.extend(line.text for line in bundle.transcript)
+        return lines
+
+    @staticmethod
+    def render(
+        bundle: Optional[VideoTranscriptBundle],
+        *,
+        show_title: bool = True,
+        show_description: bool = True,
+    ) -> None:
+        for line in FetchTranscriptUseCase.render_lines(
+            bundle,
+            show_title=show_title,
+            show_description=show_description,
+        ):
+            print(line)

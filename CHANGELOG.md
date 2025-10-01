@@ -6,6 +6,28 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [0.5.2] - 2025-10-01
+
+### Fixed
+- Copy the same Markdown-formatted transcript, title, and description to the clipboard, honoring metadata display flags.
+
+## [0.5.1] - 2025-10-01
+
+### Changed
+- Render fetched transcripts in Markdown, including a level-one title, description section header, and transcript section header.
+
+### Fixed
+- Allow the `-V`/`--version` flag to work without requiring a subcommand so the CLI prints the version as expected.
+
+## [0.5.0] - 2025-10-01
+
+### Added
+- Display the YouTube video title and description ahead of transcripts in the CLI with new opt-out flags for each field and all metadata.
+- Cache metadata alongside transcripts to reuse previously fetched titles and descriptions.
+
+### Changed
+- Introduced a metadata gateway and transcript bundle domain model so metadata and transcripts are fetched together.
+
 ## [0.4.5] - 2025-10-08
 
 ### Added

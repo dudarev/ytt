@@ -7,12 +7,13 @@ from typing import Iterable, Optional, Sequence
 
 import pyperclip  # re-exported for backwards compatibility
 
-from .domain import TranscriptService, VideoID, extract_video_id
-from .domain.entities import TranscriptLine
+from .domain import TranscriptService, VideoID, VideoTranscriptBundle, extract_video_id
+from .domain.entities import TranscriptLine, VideoMetadata
 from .infrastructure import (
     CachedYouTubeTranscriptRepository,
     ConfigRepository,
     PyperclipClipboardGateway,
+    YouTubeMetadataGateway,
 )
 from .main import main
 from .version import get_version
@@ -28,6 +29,8 @@ __all__ = [
     "load_config",
     "save_config",
     "get_transcript",
+    "get_video_metadata",
+    "get_video_bundle",
     "copy_to_clipboard",
     "__version__",
 ]
@@ -59,7 +62,37 @@ def save_config(config: dict) -> None:
 
 def get_transcript(video_id: str, preferred_languages: Optional[Sequence[str]] = None) -> Optional[list[TranscriptLine]]:
     languages = list(preferred_languages or [])
-    repository = CachedYouTubeTranscriptRepository(_config_repository().cache_dir)
+    repository = CachedYouTubeTranscriptRepository(
+        _config_repository().cache_dir,
+        YouTubeMetadataGateway(),
+    )
+    service = TranscriptService(repository)
+    bundle = service.fetch(VideoID(video_id), languages)
+    if bundle:
+        return bundle.transcript
+    return None
+
+
+def get_video_metadata(video_id: str) -> Optional[VideoMetadata]:
+    repository = CachedYouTubeTranscriptRepository(
+        _config_repository().cache_dir,
+        YouTubeMetadataGateway(),
+    )
+    service = TranscriptService(repository)
+    bundle = service.fetch(VideoID(video_id), [])
+    if bundle:
+        return bundle.metadata
+    return None
+
+
+def get_video_bundle(
+    video_id: str, preferred_languages: Optional[Sequence[str]] = None
+) -> Optional[VideoTranscriptBundle]:
+    languages = list(preferred_languages or [])
+    repository = CachedYouTubeTranscriptRepository(
+        _config_repository().cache_dir,
+        YouTubeMetadataGateway(),
+    )
     service = TranscriptService(repository)
     return service.fetch(VideoID(video_id), languages)
 

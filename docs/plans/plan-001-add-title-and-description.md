@@ -1,6 +1,6 @@
 ---
 title: plan-001-add-title-and-description
-status: draft
+status: accepted
 owner: gpt-5-codex
 last-updated: 2025-10-01
 links: { prd: docs/prds/001-add-title-and-description.md, spec: docs/specs/spec-001-add-title-and-description.md, tasks: null, adrs: [] }
