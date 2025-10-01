@@ -6,7 +6,9 @@ from pathlib import Path
 
 # Add project root to sys.path to allow importing ytt
 project_root = Path(__file__).parent.parent.resolve()
-sys.path.insert(0, str(project_root))
+src_root = project_root / "src"
+sys.path.insert(0, str(src_root))
+sys.path.insert(1, str(project_root))
 
 import ytt
 
