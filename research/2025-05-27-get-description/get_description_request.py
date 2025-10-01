@@ -1,145 +1,222 @@
+import html
+import json  # For parsing JSON
+import re  # For regular expressions
+from typing import Dict, Optional, Tuple
+
 import requests
-from bs4 import BeautifulSoup # Kept for get_video_opengraph_data, can be removed if that func is removed
-import re # For regular expressions
-import json # For parsing JSON
 
-# URL of the YouTube video
-VIDEO_URL = "https://www.youtube.com/watch?v=SS39yl1UiNA&ab_channel=NEXTALive"
+# URLs of the YouTube videos to inspect
+VIDEO_URLS = [
+    "https://www.youtube.com/watch?v=SS39yl1UiNA",
+    "https://www.youtube.com/watch?v=CYKzGwffWr8",
+    "https://www.youtube.com/watch?v=uE0r51pneSA",
+]
 
-# --- Configuration for snippet extraction ---
-# Number of characters to extract before the found snippet
-CHARS_BEFORE_SNIPPET = 50
-# Number of characters to extract after the found snippet
-CHARS_AFTER_SNIPPET = 300
-# Number of characters from the OG description to use as a search snippet
-SNIPPET_LENGTH = 30
-# --- End of Configuration ---
+# A realistic User-Agent keeps responses consistent with those returned to browsers
+REQUEST_HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/124.0.0.0 Safari/537.36"
+    ),
+    "Accept-Language": "en-US,en;q=0.9",
+}
 
-# Existing function, can be kept or removed if only new one is needed
-def get_video_opengraph_data(url):
-    """
-    Fetches a YouTube video page and extracts title and description
-    from Open Graph meta tags.
-    """
+
+def fetch_video_page(url: str) -> Optional[str]:
+    """Fetch the raw HTML for a YouTube video page."""
+
     try:
-        response = requests.get(url)
-        response.raise_for_status()  # Raise an exception for bad status codes
-
-        soup = BeautifulSoup(response.content, 'html.parser')
-
-        title_tag = soup.find("meta", property="og:title")
-        description_tag = soup.find("meta", property="og:description")
-
-        title = title_tag["content"] if title_tag else "No title found"
-        description = description_tag["content"] if description_tag else "No description found"
-
-        return title, description, response.text # Return raw response text as well
-
-    except requests.exceptions.RequestException as e:
-        print(f"Error fetching URL: {e}")
-        return None, None, None
-
-def get_youtube_description_from_json(url):
-    """
-    Fetches a YouTube video page, finds the JSON object associated with the key "description",
-    parses it, and returns the value of its "simpleText" sub-key.
-    Returns None if any step fails or the key is not found.
-    """
-    try:
-        response = requests.get(url)
-        response.raise_for_status()  # Raise an exception for bad status codes
-        page_content = response.text
-    except requests.exceptions.RequestException as e:
-        print(f"Error fetching URL for JSON description: {e}")
+        response = requests.get(url, headers=REQUEST_HEADERS, timeout=15)
+        response.raise_for_status()
+    except requests.RequestException as exc:  # pragma: no cover - networking best effort
+        print(f"Error fetching '{url}': {exc}")
         return None
 
-    key_name = "description"
-    sub_key_name = "simpleText"
-    
-    # Regex to find the key, colon, and ensure an opening brace follows.
-    pattern = f'("{key_name}"\s*:\s*)(?={{)'
-    
-    match_instance = re.search(pattern, page_content) # We only need the first good one for "description"
+    return response.text
 
-    if not match_instance:
-        print(f"Could not find key '{key_name}' followed by JSON object.")
+
+def _search_meta_content(page_content: str, property_name: str) -> Optional[str]:
+    """Search for a meta tag with ``property=property_name`` and return its content."""
+
+    pattern = re.compile(
+        rf'<meta[^>]+property=["\']{re.escape(property_name)}["\'][^>]+content=["\'](.*?)["\']',
+        re.IGNORECASE | re.DOTALL,
+    )
+    match = pattern.search(page_content)
+    if not match:
         return None
 
-    json_start_index = match_instance.end()
-    
+    return html.unescape(match.group(1)).strip()
+
+
+def extract_open_graph_description(page_content: str) -> Tuple[Optional[str], Optional[str]]:
+    """Return the Open Graph title and description from the page."""
+
+    title = _search_meta_content(page_content, "og:title")
+    description = _search_meta_content(page_content, "og:description")
+
+    return title, description
+
+
+def _extract_balanced_braces(text: str, start_index: int) -> Optional[str]:
+    """Return the JSON string starting at ``start_index`` with balanced braces."""
+
+    if start_index >= len(text) or text[start_index] != "{":
+        return None
+
     brace_level = 0
     in_string = False
     escaped = False
-    json_end_index = -1
 
-    for i in range(json_start_index, len(page_content)):
-        char = page_content[i]
+    for i in range(start_index, len(text)):
+        char = text[i]
+
         if escaped:
             escaped = False
             continue
-        if char == '\\':
+
+        if char == "\\":
             escaped = True
             continue
+
         if char == '"':
             in_string = not in_string
-        if not in_string:
-            if char == '{':
-                brace_level += 1
-            elif char == '}':
-                brace_level -= 1
-        if brace_level == 0 and i >= json_start_index and page_content[json_start_index] == '{':
-            json_end_index = i
-            break
-    
-    if json_end_index != -1:
-        json_object_string = page_content[json_start_index : json_end_index + 1]
-        try:
-            parsed_object = json.loads(json_object_string)
-            if isinstance(parsed_object, dict):
-                value = parsed_object.get(sub_key_name)
-                if value is not None:
-                    return str(value) # Ensure it's a string
-                else:
-                    print(f"Sub-key '{sub_key_name}' not found in JSON for '{key_name}'.")
-                    return None
-            else:
-                print(f"Parsed JSON for '{key_name}' is not a dictionary.")
-                return None
-        except json.JSONDecodeError as e:
-            print(f"Error decoding JSON for '{key_name}': {e}")
-            return None
-    else:
-        print(f"Could not find a balanced JSON object for '{key_name}'.")
+            continue
+
+        if in_string:
+            continue
+
+        if char == "{":
+            brace_level += 1
+        elif char == "}":
+            brace_level -= 1
+            if brace_level == 0:
+                return text[start_index : i + 1]
+
+    return None
+
+
+def extract_json_object_after_pattern(page_content: str, pattern: str) -> Optional[Dict]:
+    """Search ``page_content`` for ``pattern`` and parse the JSON object that follows."""
+
+    match = re.search(pattern, page_content)
+    if not match:
         return None
 
-if __name__ == "__main__":
-    # --- Demonstrate OpenGraph fetching (optional) ---
-    og_title, og_description_text, _ = get_video_opengraph_data(VIDEO_URL) # page_content not needed here
+    json_start = page_content.find("{", match.end())
+    if json_start == -1:
+        return None
+
+    json_string = _extract_balanced_braces(page_content, json_start)
+    if not json_string:
+        return None
+
+    try:
+        return json.loads(json_string)
+    except json.JSONDecodeError:
+        return None
+
+
+def extract_description_from_description_object(page_content: str) -> Optional[str]:
+    """Parse the first ``"description": {...}`` JSON object and return the contained text."""
+
+    pattern = r'("description"\s*:\s*)(?=\{)'
+    match = re.search(pattern, page_content)
+    if not match:
+        return None
+
+    json_start = match.end()
+    json_string = _extract_balanced_braces(page_content, json_start)
+    if not json_string:
+        return None
+
+    try:
+        description_obj = json.loads(json_string)
+    except json.JSONDecodeError:
+        return None
+
+    if isinstance(description_obj, dict):
+        if "simpleText" in description_obj and description_obj["simpleText"]:
+            return str(description_obj["simpleText"])
+        if "runs" in description_obj and isinstance(description_obj["runs"], list):
+            return "".join(str(run.get("text", "")) for run in description_obj["runs"])
+
+    return None
+
+
+def extract_description_from_player_response(page_content: str) -> Optional[str]:
+    """Pull the description from ``ytInitialPlayerResponse`` if present."""
+
+    patterns = [
+        r"ytInitialPlayerResponse\s*=\s*",
+        r'ytInitialPlayerResponse"\s*:\s*',
+    ]
+
+    player_data: Optional[Dict] = None
+    for pattern in patterns:
+        player_data = extract_json_object_after_pattern(page_content, pattern)
+        if player_data:
+            break
+
+    if not isinstance(player_data, dict):
+        return None
+
+    video_details = player_data.get("videoDetails", {})
+    if isinstance(video_details, dict):
+        description = video_details.get("shortDescription")
+        if description:
+            return str(description)
+
+    microformat = player_data.get("microformat", {})
+    if isinstance(microformat, dict):
+        renderer = microformat.get("playerMicroformatRenderer", {})
+        if isinstance(renderer, dict):
+            description_obj = renderer.get("description")
+            if isinstance(description_obj, dict):
+                if "simpleText" in description_obj and description_obj["simpleText"]:
+                    return str(description_obj["simpleText"])
+                if "runs" in description_obj and isinstance(description_obj["runs"], list):
+                    return "".join(str(run.get("text", "")) for run in description_obj["runs"])
+
+    return None
+
+
+def print_description_report(url: str) -> None:
+    """Fetch ``url`` once and display the descriptions extracted via each method."""
+
+    print("=" * 80)
+    print(f"Video URL: {url}")
+
+    page_content = fetch_video_page(url)
+    if page_content is None:
+        print("Failed to fetch page content; skipping analysis.\n")
+        return
+
+    og_title, og_description = extract_open_graph_description(page_content)
     if og_title:
         print(f"OG Title: {og_title}")
-    if og_description_text:
-        print(f"OG Description: {og_description_text}")
-    print("-" * 30) 
-
-    # --- Demonstrate new JSON-based description fetching ---
-    print(f"\nFetching description for URL: {VIDEO_URL} using JSON method...")
-    json_derived_description = get_youtube_description_from_json(VIDEO_URL)
-
-    if json_derived_description:
-        print("\nSuccessfully extracted description via JSON method:")
-        print(json_derived_description)
     else:
-        print("\nFailed to extract description using JSON method.")
+        print("OG Title: <not found>")
 
-    # --- Previous detailed JSON key exploration (now largely superseded by the function above) ---
-    # This part can be removed or kept for more detailed debugging if needed.
-    '''
-    if page_content: # This page_content would need to be fetched again or passed if we remove the OG call
-        print("\n--- Extracting specific values from JSON objects (Detailed Exploration) ---")
-        target_json_keys_and_subkeys = {
-            "description": "simpleText",
-            "attributedDescription": "content",
-            "attributedDescriptionBodyText": "content"
-        }
-        # ... (rest of the detailed exploration loop from previous version) ...
-    '''
+    if og_description:
+        print(f"OG Description: {og_description}")
+    else:
+        print("OG Description: <not found>")
+
+    json_description = extract_description_from_description_object(page_content)
+    if json_description:
+        print("Description via description JSON: \n" + json_description)
+    else:
+        print("Description via description JSON: <not found>")
+
+    player_response_description = extract_description_from_player_response(page_content)
+    if player_response_description:
+        print("Description via ytInitialPlayerResponse: \n" + player_response_description)
+    else:
+        print("Description via ytInitialPlayerResponse: <not found>")
+
+
+if __name__ == "__main__":
+    for video_url in VIDEO_URLS:
+        print_description_report(video_url)
