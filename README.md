@@ -6,10 +6,12 @@ This tool wraps the [youtube-transcript-api](https://github.com/jdepoix/youtube-
 
 
 ## Features
-- Automatically extracts video ID from multiple YouTube URL formats
+- Automatically extracts video ID from multiple YouTube URL formats (including Shorts)
+- Outputs video title and description along with the transcript in Markdown format
+- Automatically copies the output to the clipboard
 - Prioritizes manually created transcripts based on preferred languages
 - Falls back to automatically generated transcripts if no manual ones are available
-- Caches previously fetched transcripts to speed up repeated requests
+- Caches previously fetched transcripts and metadata to speed up repeated requests
 
 
 ## Installation
@@ -104,6 +106,8 @@ ytt <youtube_url>
 ```
 *(This implicitly uses the `fetch` command)*
 
+By default, the tool will output the video's title and description followed by the transcript, all formatted in Markdown. The output is also automatically copied to your clipboard.
+
 **Example:**
 
 ```bash
@@ -111,20 +115,23 @@ ytt "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
 ```
 
 The tool prioritizes manually created transcripts and will attempt your preferred languages in the given order.
-If successful, it will print only the transcript text to standard output. Errors will be printed to standard error.
+If successful, it will print the title, description and the transcript text to standard output. Errors will be printed to standard error.
+
+**Controlling Output:**
+
+You can control the output with the following flags:
+
+*   `--no-title`: Suppress the video title.
+*   `--no-description`: Suppress the video description.
+*   `--no-metadata`: Suppress both the title and description.
+*   `--no-copy`: Do not copy the output to the clipboard.
 
 **Redirecting Output:**
 
-You can save the transcript directly to a file:
+Even though the output is automatically copied to the clipboard, you can still redirect it to a file:
 
 ```bash
-ytt "<youtube_url>" > transcript.txt
-```
-
-or to the clipboard:
-
-```bash
-ytt "<youtube_url>" | pbcopy
+ytt "<youtube_url>" > transcript.md
 ```
 
 ## Supported URL Formats
@@ -135,6 +142,7 @@ The tool attempts to extract the video ID from common YouTube URL formats, inclu
 *   `https://youtu.be/VIDEO_ID`
 *   `https://www.youtube.com/embed/VIDEO_ID`
 *   `https://www.youtube.com/v/VIDEO_ID`
+*   `https://www.youtube.com/shorts/VIDEO_ID`
 
 ## License
 
