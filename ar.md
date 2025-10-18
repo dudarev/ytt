@@ -1,5 +1,7 @@
 File inspired by [The append-and-review note idea by Andrej Karpathy](https://karpathy.bearblog.dev/the-append-and-review-note/)
 
+Consider adding explicit link to the YouTube video from which the transcript is extracted. 
+
 Create a separate library to get a video title and description for YouTube from parsing the page. it can be heavily AI coded we can get several pages as an example and and devise a strategy to extract description and titlec:qo separate description from the transcript or h2-level sections (Description, Transcript)
 
 Have config to include the title and the description
@@ -28,3 +30,8 @@ Potentially split into packages
 Regularly clean unnecessary comments
 
 Return also the title of the video, it's description and the link to it
+
+In the long run, we want to transcribe video if transcript is not available using local whisper or something like that.
+
+Currently, we can output without the transcript the title and description and a message that transcript is not available.
+Example video without a transcript: https://www.youtube.com/watch?v=v52PlPf4KUI
