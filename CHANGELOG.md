@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.6.0] - 2025-10-18
+
+### Added
+- Allow Markdown-formatted YouTube links to be parsed when extracting video IDs, so CLI commands and library helpers accept pasted Markdown URLs.
+
+### Changed
+- Documented the unit-test layout convention and the YouTube URL parsing entrypoint in `AGENTS.md` to speed up future feature work.
+
+## [0.5.4] - 2025-10-18
+
+### Changed
+- Expanded the feature-development workflow guidance in `AGENTS.md`, the associated spec, and plan templates to clarify expectations for future contributions.
+
 ## [0.5.3] - 2025-10-05
 
 ### Changed

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 from dataclasses import dataclass
 from typing import Optional
 from urllib.parse import parse_qs, urlparse
@@ -21,10 +22,29 @@ class VideoID:
         return self.value
 
 
+MARKDOWN_LINK_PATTERN = re.compile(
+    r"""
+    !?\[            # opening [, optional image marker
+    [^\]]*          # link text
+    \]              # closing ]
+    \(\s*           # opening parenthesis for URL
+    (?P<url>[^)\s]+(?:[^)]*[^)\s])?)  # URL contents, ignore surrounding whitespace
+    \s*\)           # closing parenthesis with optional surrounding whitespace
+    """,
+    re.VERBOSE,
+)
+
+
 def extract_video_id(url: str) -> Optional[VideoID]:
     """Extract a :class:`VideoID` from a YouTube URL."""
 
-    parsed_url = urlparse(url)
+    candidate = url.strip()
+
+    match = MARKDOWN_LINK_PATTERN.fullmatch(candidate) or MARKDOWN_LINK_PATTERN.search(candidate)
+    if match:
+        candidate = match.group("url").strip()
+
+    parsed_url = urlparse(candidate)
     query_params = parse_qs(parsed_url.query)
 
     if parsed_url.netloc in {"www.youtube.com", "youtube.com"} and parsed_url.path == "/watch" and "v" in query_params:
