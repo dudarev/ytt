@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.7.0] - 2025-11-01
+
+### Added
+- Print the canonical video URL (`https://www.youtube.com/watch?v=<VIDEO_ID>`) as the first line of output by default, improving traceability for AI summarization workflows.
+- Added `--no-url` flag to suppress the URL line when not needed.
+
+### Changed
+- `--no-metadata` now disables URL, title, and description output (previously only title and description).
+
 ## [0.6.0] - 2025-10-18
 
 ### Added

@@ -106,7 +106,7 @@ ytt <youtube_url>
 ```
 *(This implicitly uses the `fetch` command)*
 
-By default, the tool will output the video's title and description followed by the transcript, all formatted in Markdown. The output is also automatically copied to your clipboard.
+By default, the tool will output the canonical video URL as the first line, followed by the video's title and description, and then the transcript, all formatted in Markdown. The output is also automatically copied to your clipboard.
 
 **Example:**
 
@@ -114,16 +114,30 @@ By default, the tool will output the video's title and description followed by t
 ytt "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
 ```
 
+Output:
+```
+https://www.youtube.com/watch?v=dQw4w9WgXcQ
+
+# Video Title
+
+## Description
+Description text here...
+
+## Transcript
+[transcript lines]
+```
+
 The tool prioritizes manually created transcripts and will attempt your preferred languages in the given order.
-If successful, it will print the title, description and the transcript text to standard output. Errors will be printed to standard error.
+If successful, it will print the URL, title, description and the transcript text to standard output. Errors will be printed to standard error.
 
 **Controlling Output:**
 
 You can control the output with the following flags:
 
+*   `--no-url`: Suppress the video URL line.
 *   `--no-title`: Suppress the video title.
 *   `--no-description`: Suppress the video description.
-*   `--no-metadata`: Suppress both the title and description.
+*   `--no-metadata`: Suppress the URL, title, and description.
 *   `--no-copy`: Do not copy the output to the clipboard.
 
 **Redirecting Output:**
@@ -146,4 +160,4 @@ The tool attempts to extract the video ID from common YouTube URL formats, inclu
 
 ## License
 
-[MIT License](LICENSE)
+[MIT License](LICENSE.md)

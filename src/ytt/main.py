@@ -56,17 +56,22 @@ def main() -> None:
     elif args.command == "fetch":
         show_title = not (args.no_title or args.no_metadata)
         show_description = not (args.no_description or args.no_metadata)
+        show_url = not (args.no_url or args.no_metadata)
         bundle = fetch_use_case.execute(
             args.youtube_url,
             copy_to_clipboard=not args.no_copy,
             show_title=show_title,
             show_description=show_description,
+            show_url=show_url,
+            input_url=args.youtube_url,
         )
         if bundle:
             FetchTranscriptUseCase.render(
                 bundle,
                 show_title=show_title,
                 show_description=show_description,
+                show_url=show_url,
+                input_url=args.youtube_url,
             )
         else:
             raise SystemExit(1)

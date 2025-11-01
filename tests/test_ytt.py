@@ -44,12 +44,16 @@ class TestYttClipboard(unittest.TestCase):
             FetchTranscriptUseCase.render_lines(
                 self.sample_bundle,
                 show_title=False,
+                show_url=True,
+                input_url="https://www.youtube.com/watch?v=test_video_id",
             )
         )
         self.expected_clipboard_no_description = "\n".join(
             FetchTranscriptUseCase.render_lines(
                 self.sample_bundle,
                 show_description=False,
+                show_url=True,
+                input_url="https://www.youtube.com/watch?v=test_video_id",
             )
         )
         self.expected_clipboard_no_metadata = "\n".join(
@@ -57,6 +61,21 @@ class TestYttClipboard(unittest.TestCase):
                 self.sample_bundle,
                 show_title=False,
                 show_description=False,
+            )
+        )
+        self.expected_url_line = "https://www.youtube.com/watch?v=test_video_id"
+        self.expected_clipboard_with_url = "\n".join(
+            FetchTranscriptUseCase.render_lines(
+                self.sample_bundle,
+                show_url=True,
+                input_url="https://www.youtube.com/watch?v=test_video_id",
+            )
+        )
+        self.expected_clipboard_no_url = "\n".join(
+            FetchTranscriptUseCase.render_lines(
+                self.sample_bundle,
+                show_url=False,
+                input_url="https://www.youtube.com/watch?v=test_video_id",
             )
         )
 
@@ -79,8 +98,9 @@ class TestYttClipboard(unittest.TestCase):
                 self.assertEqual(e.code, None) # Or check for specific exit codes if expected
 
         mock_fetch_transcript.assert_called_once()
-        mock_pyperclip_copy.assert_called_once_with(self.expected_clipboard_full)
+        mock_pyperclip_copy.assert_called_once_with(self.expected_clipboard_with_url)
         stdout_value = mock_stdout.getvalue().replace('\\n', '\n')
+        self.assertIn(self.expected_url_line, stdout_value)
         self.assertIn(self.expected_transcript_header, stdout_value)
         self.assertIn(self.expected_transcript_string, stdout_value)
         self.assertIn(self.expected_title_header, stdout_value)
@@ -192,6 +212,34 @@ class TestYttClipboard(unittest.TestCase):
         self.assertNotIn(self.expected_description_header, stdout_value)
         self.assertNotIn(self.sample_metadata.title, stdout_value)
         self.assertNotIn(self.sample_metadata.description, stdout_value)
+        self.assertNotIn(self.expected_url_line, stdout_value)
+
+    @patch('ytt.pyperclip.copy')
+    @patch('ytt.domain.services.TranscriptService.fetch')
+    @patch('sys.stdout', new_callable=io.StringIO)
+    @patch('ytt.application.config_service.ConfigService.get_preferred_languages')
+    @patch('ytt.application.fetch_service.extract_video_id')
+    def test_no_url_flag(self, mock_extract_video_id, mock_get_languages, mock_stdout, mock_fetch_transcript, mock_pyperclip_copy):
+        mock_extract_video_id.return_value = VideoID("test_video_id")
+        mock_fetch_transcript.return_value = self.sample_bundle
+        mock_get_languages.return_value = ['en']
+
+        test_args = ['ytt.py', 'fetch', 'some_url', '--no-url']
+        with patch.object(sys, 'argv', test_args):
+            try:
+                ytt.main()
+            except SystemExit as exc:
+                self.assertIsNone(exc.code)
+
+        mock_fetch_transcript.assert_called_once()
+        mock_pyperclip_copy.assert_called_once_with(self.expected_clipboard_no_url)
+        stdout_value = mock_stdout.getvalue().replace('\\n', '\n')
+        self.assertNotIn(self.expected_url_line, stdout_value)
+        self.assertIn(self.expected_transcript_header, stdout_value)
+        self.assertIn(self.expected_transcript_string, stdout_value)
+        self.assertIn(self.expected_title_header, stdout_value)
+        self.assertIn(self.expected_description_header, stdout_value)
+        self.assertIn(self.sample_metadata.description, stdout_value)
 
     @patch('ytt.pyperclip.copy', side_effect=pyperclip.PyperclipException("Mock clipboard error"))
     @patch('ytt.domain.services.TranscriptService.fetch')

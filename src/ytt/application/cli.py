@@ -44,9 +44,14 @@ def build_parser() -> argparse.ArgumentParser:
         help="Do not print the video description before the transcript.",
     )
     fetch_parser.add_argument(
+        "--no-url",
+        action="store_true",
+        help="Do not print the video URL as the first line.",
+    )
+    fetch_parser.add_argument(
         "--no-metadata",
         action="store_true",
-        help="Disable both title and description output.",
+        help="Disable URL, title, and description output.",
     )
 
     config_parser = subparsers.add_parser("config", help="Configure ytt settings.")

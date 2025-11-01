@@ -55,6 +55,8 @@ class FetchTranscriptUseCase:
         copy_to_clipboard: bool = True,
         show_title: bool = True,
         show_description: bool = True,
+        show_url: bool = True,
+        input_url: Optional[str] = None,
     ) -> Optional[VideoTranscriptBundle]:
         video_id = self._ensure_video_id(url)
         languages = self._resolve_preferred_languages()
@@ -66,6 +68,8 @@ class FetchTranscriptUseCase:
                 bundle,
                 show_title=show_title,
                 show_description=show_description,
+                show_url=show_url,
+                input_url=input_url or url,
             )
             self._clipboard.copy(lines)
         return bundle
@@ -76,11 +80,23 @@ class FetchTranscriptUseCase:
         *,
         show_title: bool = True,
         show_description: bool = True,
+        show_url: bool = True,
+        input_url: Optional[str] = None,
     ) -> list[str]:
         if not bundle:
             return []
         metadata = bundle.metadata
         lines: list[str] = []
+        # Prepend canonical URL if requested
+        if show_url and input_url:
+            try:
+                video_id = extract_video_id(input_url)
+                if video_id:
+                    lines.append(f"https://www.youtube.com/watch?v={video_id.value}")
+                    lines.append("")
+            except Exception:
+                # Defensive: if URL extraction fails, skip URL line and continue
+                pass
         if show_title and metadata.title:
             lines.append(f"# {metadata.title}")
             lines.append("")
@@ -100,10 +116,14 @@ class FetchTranscriptUseCase:
         *,
         show_title: bool = True,
         show_description: bool = True,
+        show_url: bool = True,
+        input_url: Optional[str] = None,
     ) -> None:
         for line in FetchTranscriptUseCase.render_lines(
             bundle,
             show_title=show_title,
             show_description=show_description,
+            show_url=show_url,
+            input_url=input_url,
         ):
             print(line)
