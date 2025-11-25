@@ -15,6 +15,11 @@ import pyperclip
 pyperclip.copy("Text to copy")
 ```
 
+Use the content of the clipboard as input if no parameters are specified, assuming a YouTube link is copied to the clipboard.
+If no parameters are specified, use the clipboard content (assumed to be a YouTube link) as input; this enables idempotent, reusable operations when the same URL is used repeatedly.
+
+Provide a configurable prefix (prompt) that can be added to the output. This is useful for workflows where transcripts are frequently summarized, allowing a custom prompt to be prepended automatically.
+
 Set up CI
 
 Write the most important tests
