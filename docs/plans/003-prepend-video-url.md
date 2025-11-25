@@ -1,9 +1,9 @@
 ---
 title: 003-prepend-video-url
-status: draft
+status: accepted
 owner: gpt-5-codex
-last-updated: 2025-11-01
-links: { prd: ../prds/003-prepend-video-url.md, spec: ../specs/003-prepend-video-url.md, tasks: null, adrs: [] }
+last-updated: 2025-11-25
+links: { prd: docs/prds/003-prepend-video-url.md, spec: docs/specs/003-prepend-video-url.md, tasks: null, adrs: [] }
 ---
 
 ## Goal
@@ -52,11 +52,11 @@ Deliver the prepend-video-url functionality so CLI users receive the canonical v
 - **Edge case**: Missing `input_url` → skip URL line, continue normally.
 
 ## Definition of Done
-- [ ] All tests passing locally and in CI.
-- [ ] Default output includes canonical URL as first line.
-- [ ] `--no-url` and `--no-metadata` work as specified.
-- [ ] README and CHANGELOG updated; version bumped to 0.7.0.
-- [ ] PR references PRD/Spec/Plan.
+- [x] All tests passing locally and in CI.
+- [x] Default output includes canonical URL as first line.
+- [x] `--no-url` and `--no-metadata` work as specified.
+- [x] README and CHANGELOG updated; version bumped to 0.7.0.
+- [x] PR references PRD/Spec/Plan.
 
 ## Risks & Mitigations
 - **Output parsing regression**: Users or scripts expecting specific first line format.

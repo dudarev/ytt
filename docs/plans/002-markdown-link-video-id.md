@@ -1,8 +1,8 @@
 ---
 title: 002-markdown-link-video-id
-status: draft
+status: accepted
 owner: gpt-5-codex
-last-updated: 2025-10-18
+last-updated: 2025-11-25
 links: { prd: docs/prds/002-markdown-link-video-id.md, spec: docs/specs/002-markdown-link-video-id.md, tasks: null, adrs: [] }
 ---
 
