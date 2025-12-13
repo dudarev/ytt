@@ -1,7 +1,6 @@
 This document tracks ideas and tasks for improving the `ytt` tool. It's inspired by Andrej Karpathy's [append-and-review note-taking method](https://karpathy.bearblog.dev/the-append-and-review-note/).
 
 ### High-Priority Tasks
-- **Clipboard as Input**: If no URL is provided, use the clipboard's content as the input URL. This allows for faster, idempotent workflows when working with the same link repeatedly.
 - **Handle Videos Without Transcripts**: For videos lacking a transcript (e.g., [https://www.youtube.com/watch?v=v52PlPf4KUI](https://www.youtube.com/watch?v=v52PlPf4KUI)), output the title, description, and a message indicating the transcript is unavailable.
 - **CI/CD**: Set up a continuous integration pipeline to automate testing and linting.
 - **Write Key Tests**: Expand the test suite to cover critical user paths and edge cases.
@@ -21,3 +20,5 @@ This document tracks ideas and tasks for improving the `ytt` tool. It's inspired
 - Configure output sections (title, description, etc.)
 - Use a structured, package-based architecture
 - Introduce ADRs and AI assistant guidelines
+- **Clipboard as Input**: If no URL is provided, use the clipboard's content as the input URL. This allows for faster, idempotent workflows when working with the same link repeatedly.
+
