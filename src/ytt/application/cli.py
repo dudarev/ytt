@@ -10,7 +10,7 @@ from ..version import get_version
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="Fetch YouTube video transcripts or manage configuration.",
-        usage="ytt <youtube_url> | ytt config <setting> <value>",
+        usage="ytt [<youtube_url>] | ytt config <setting> <value>",
     )
 
     parser.add_argument(

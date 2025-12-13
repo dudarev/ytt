@@ -99,12 +99,16 @@ This saves your preferences to a configuration file (e.g., `~/.config/ytt/config
 
 ### 2. Fetch Transcript
 
-Once languages are configured, run the tool providing the URL of the YouTube video:
+Once languages are configured, run the tool providing the URL of the YouTube video. If you omit the URL entirely, YTT will try to read a YouTube link from your clipboard:
 
 ```bash
 ytt <youtube_url>
 ```
 *(This implicitly uses the `fetch` command)*
+
+```bash
+ytt  # Uses clipboard contents when no URL is supplied
+```
 
 By default, the tool will output the canonical video URL as the first line, followed by the video's title and description, and then the transcript, all formatted in Markdown. The output is also automatically copied to your clipboard.
 
