@@ -5,6 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.1] - 2025-12-13
+
+### Fixed
+- Show CLI help after clipboard errors when invoking `ytt` without arguments so users can quickly see how to provide a URL.
+
+## [0.8.0] - 2025-12-13
+
+### Added
+- Allow invoking `ytt` with no arguments to read a YouTube URL from the clipboard before fetching transcripts.
+
+### Fixed
+- Provide explicit clipboard error messages when clipboard access fails or lacks a usable YouTube URL instead of showing generic help text.
+
 ## [0.7.0] - 2025-11-01
 
 ### Added

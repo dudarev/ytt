@@ -5,30 +5,51 @@ from __future__ import annotations
 import sys
 from typing import List
 
+import pyperclip
+
 from .application import ConfigService, FetchTranscriptUseCase, build_parser
-from .domain import TranscriptService
+from .domain import TranscriptService, extract_video_id
 from .infrastructure import (
     CachedYouTubeTranscriptRepository,
+    ClipboardGateway,
     ConfigRepository,
     PyperclipClipboardGateway,
     YouTubeMetadataGateway,
 )
 
 
-def _prepare_args(argv: List[str]):
+def _prepare_args(argv: List[str], clipboard: ClipboardGateway):
     parser = build_parser()
     if argv and argv[0] not in {"fetch", "config"}:
         if "http://" in argv[0] or "https://" in argv[0]:
             argv = ["fetch", *argv]
     if not argv:
-        parser.print_help(sys.stderr)
-        raise SystemExit(1)
+        try:
+            clipboard_text = clipboard.read().strip()
+        except pyperclip.PyperclipException:
+            raise SystemExit(1)
+        if not clipboard_text:
+            print(
+                "Error: Clipboard is empty. Provide a YouTube URL or use 'ytt --help'.",
+                file=sys.stderr,
+            )
+            parser.print_help(sys.stderr)
+            raise SystemExit(1)
+        if not extract_video_id(clipboard_text):
+            print(
+                "Error: No YouTube URL found in clipboard. Provide a URL or use 'ytt --help'.",
+                file=sys.stderr,
+            )
+            parser.print_help(sys.stderr)
+            raise SystemExit(1)
+        argv = ["fetch", clipboard_text]
     return parser, parser.parse_args(argv)
 
 
 def main() -> None:
     argv = sys.argv[1:]
-    parser, args = _prepare_args(argv)
+    clipboard = PyperclipClipboardGateway()
+    parser, args = _prepare_args(argv, clipboard)
 
     config_repository = ConfigRepository()
     config_service = ConfigService(config_repository)
@@ -38,8 +59,6 @@ def main() -> None:
         metadata_gateway,
     )
     transcript_service = TranscriptService(transcript_repository)
-    clipboard = PyperclipClipboardGateway()
-
     fetch_use_case = FetchTranscriptUseCase(
         transcript_service,
         config_service,
