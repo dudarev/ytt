@@ -102,9 +102,11 @@ This saves your preferences to a configuration file (e.g., `~/.config/ytt/config
 Once languages are configured, run the tool providing the URL of the YouTube video. If you omit the URL entirely, YTT will try to read a YouTube link from your clipboard:
 
 ```bash
-ytt <youtube_url>
+ytt "<youtube_url>"
 ```
 *(This implicitly uses the `fetch` command)*
+
+Tip: Always wrap the YouTube URL in quotes in your shell (this avoids issues with characters like `&`).
 
 ```bash
 ytt  # Uses clipboard contents when no URL is supplied

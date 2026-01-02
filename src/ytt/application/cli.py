@@ -10,7 +10,7 @@ from ..version import get_version
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="Fetch YouTube video transcripts or manage configuration.",
-        usage="ytt [<youtube_url>] | ytt config <setting> <value>",
+        usage='ytt ["<youtube_url>"] | ytt config <setting> <value>',
     )
 
     parser.add_argument(
@@ -27,7 +27,10 @@ def build_parser() -> argparse.ArgumentParser:
         "fetch",
         help="Fetch transcript for a given URL (default command if none specified)",
     )
-    fetch_parser.add_argument("youtube_url", help="The URL of the YouTube video.")
+    fetch_parser.add_argument(
+        "youtube_url",
+        help="The URL of the YouTube video (wrap it in quotes in your shell).",
+    )
     fetch_parser.add_argument(
         "--no-copy",
         action="store_true",

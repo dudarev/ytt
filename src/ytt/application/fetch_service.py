@@ -43,6 +43,10 @@ class FetchTranscriptUseCase:
         video_id = self._extractor(url)
         if video_id is None:
             print(f"Error: Could not extract video ID from URL: {url}", file=sys.stderr)
+            print(
+                'Tip: Wrap the URL in quotes in your shell (e.g., ytt "https://www.youtube.com/watch?v=VIDEO_ID").',
+                file=sys.stderr,
+            )
             raise SystemExit(1)
         if isinstance(video_id, VideoID):
             return video_id

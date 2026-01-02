@@ -5,6 +5,12 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.8.2] - 2026-01-02
+
+### Changed
+- Clarified CLI help/README that YouTube URLs should be wrapped in quotes when passed via a shell.
+- Added an error hint to quote URLs when extraction fails (common when `&` gets interpreted by the shell).
+
 ## [0.8.1] - 2025-12-13
 
 ### Fixed
