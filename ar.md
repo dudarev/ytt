@@ -1,6 +1,6 @@
 This document tracks ideas and tasks for improving the `ytt` tool. It's inspired by Andrej Karpathy's [append-and-review note-taking method](https://karpathy.bearblog.dev/the-append-and-review-note/).
 
-- In the help documentation it may be useful to mention that quotes should be used around URL.
+- It may be useful to have a list of all the possible settings available in README and also in the help for the config command.
 
 ### High-Priority Tasks
 - **Handle Videos Without Transcripts**: For videos lacking a transcript (e.g., [https://www.youtube.com/watch?v=v52PlPf4KUI](https://www.youtube.com/watch?v=v52PlPf4KUI)), output the title, description, and a message indicating the transcript is unavailable.
