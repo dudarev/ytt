@@ -67,4 +67,9 @@ def build_parser() -> argparse.ArgumentParser:
         help="The value to set for the setting (e.g., 'en,es,fr').",
     )
 
+    subparsers.add_parser(
+        "help",
+        help="Show help message and exit.",
+    )
+
     return parser

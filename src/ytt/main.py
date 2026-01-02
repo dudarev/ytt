@@ -20,7 +20,7 @@ from .infrastructure import (
 
 def _prepare_args(argv: List[str], clipboard: ClipboardGateway):
     parser = build_parser()
-    if argv and argv[0] not in {"fetch", "config"}:
+    if argv and argv[0] not in {"fetch", "config", "help"}:
         if "http://" in argv[0] or "https://" in argv[0]:
             argv = ["fetch", *argv]
     if not argv:
@@ -65,7 +65,10 @@ def main() -> None:
         clipboard,
     )
 
-    if args.command == "config":
+    if args.command == "help":
+        parser.print_help()
+        sys.exit(0)
+    elif args.command == "config":
         if args.setting.lower() == "languages":
             languages = [lang.strip() for lang in args.value.split(",") if lang.strip()]
             config_service.set_preferred_languages(languages)
