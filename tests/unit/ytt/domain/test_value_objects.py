@@ -42,6 +42,12 @@ class TestExtractVideoID(unittest.TestCase):
     def test_non_markdown_string_returns_none(self):
         self.assertIsNone(extract_video_id("not a url at all"))
 
+    def test_schemeless_shorts_url(self):
+        link = "youtube.com/shorts/BsWxPI9UM4c"
+        video_id = extract_video_id(link)
+        self.assertIsInstance(video_id, VideoID)
+        self.assertEqual(video_id.value, "BsWxPI9UM4c")
+
 
 if __name__ == "__main__":
     unittest.main()

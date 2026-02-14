@@ -44,6 +44,10 @@ def extract_video_id(url: str) -> Optional[VideoID]:
     if match:
         candidate = match.group("url").strip()
 
+    # Support schemeless inputs like "youtube.com/shorts/<id>".
+    if re.match(r"^(?:www\.)?(?:youtube\.com|youtu\.be)/", candidate):
+        candidate = f"https://{candidate}"
+
     parsed_url = urlparse(candidate)
     query_params = parse_qs(parsed_url.query)
 
