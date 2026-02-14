@@ -144,6 +144,7 @@ You can control the output with the following flags:
 *   `--no-title`: Suppress the video title.
 *   `--no-description`: Suppress the video description.
 *   `--no-metadata`: Suppress the URL, title, and description.
+*   `--refresh`: Bypass local cache and fetch transcript/metadata from YouTube.
 *   `--no-copy`: Do not copy the output to the clipboard.
 
 **Redirecting Output:**

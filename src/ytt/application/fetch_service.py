@@ -61,10 +61,11 @@ class FetchTranscriptUseCase:
         show_description: bool = True,
         show_url: bool = True,
         input_url: Optional[str] = None,
+        refresh: bool = False,
     ) -> Optional[VideoTranscriptBundle]:
         video_id = self._ensure_video_id(url)
         languages = self._resolve_preferred_languages()
-        bundle = self._service.fetch(video_id, languages)
+        bundle = self._service.fetch(video_id, languages, refresh=refresh)
         if not bundle:
             return None
         if copy_to_clipboard:

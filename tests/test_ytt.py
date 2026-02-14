@@ -139,6 +139,36 @@ class TestYttClipboard(unittest.TestCase):
     @patch('sys.stdout', new_callable=io.StringIO)
     @patch('ytt.application.config_service.ConfigService.get_preferred_languages')
     @patch('ytt.application.fetch_service.extract_video_id')
+    def test_refresh_flag(
+        self,
+        mock_extract_video_id,
+        mock_get_languages,
+        mock_stdout,
+        mock_fetch_transcript,
+        mock_pyperclip_copy,
+    ):
+        mock_extract_video_id.return_value = VideoID("test_video_id")
+        mock_fetch_transcript.return_value = self.sample_bundle
+        mock_get_languages.return_value = ['en']
+
+        test_args = ['ytt.py', 'fetch', 'some_url', '--refresh']
+        with patch.object(sys, 'argv', test_args):
+            try:
+                ytt.main()
+            except SystemExit as exc:
+                self.assertIsNone(exc.code)
+
+        mock_fetch_transcript.assert_called_once()
+        self.assertTrue(mock_fetch_transcript.call_args.kwargs.get("refresh"))
+        mock_pyperclip_copy.assert_called_once_with(self.expected_clipboard_with_url)
+        stdout_value = mock_stdout.getvalue().replace('\\n', '\n')
+        self.assertIn(self.expected_transcript_header, stdout_value)
+
+    @patch('ytt.pyperclip.copy')
+    @patch('ytt.domain.services.TranscriptService.fetch')
+    @patch('sys.stdout', new_callable=io.StringIO)
+    @patch('ytt.application.config_service.ConfigService.get_preferred_languages')
+    @patch('ytt.application.fetch_service.extract_video_id')
     def test_no_title_flag(self, mock_extract_video_id, mock_get_languages, mock_stdout, mock_fetch_transcript, mock_pyperclip_copy):
         mock_extract_video_id.return_value = VideoID("test_video_id")
         mock_fetch_transcript.return_value = self.sample_bundle

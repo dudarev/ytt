@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.9.0] - 2026-02-14
+
+### Added
+- Added `--refresh` to `fetch` so a run can bypass local cache and force a fresh transcript/metadata fetch.
+
+## [0.8.5] - 2026-02-14
+
+### Fixed
+- Treat YouTube's generic platform boilerplate description as empty metadata so Shorts output skips the `## Description` section when no real description is available.
+
 ## [0.8.4] - 2026-02-14
 
 ### Fixed

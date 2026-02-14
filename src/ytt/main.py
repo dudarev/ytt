@@ -86,6 +86,7 @@ def main() -> None:
             show_description=show_description,
             show_url=show_url,
             input_url=args.youtube_url,
+            refresh=args.refresh,
         )
         if bundle:
             FetchTranscriptUseCase.render(

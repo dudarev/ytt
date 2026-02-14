@@ -28,11 +28,15 @@ class CachedYouTubeTranscriptRepository(TranscriptRepository):
         self._metadata_gateway = metadata_gateway
 
     def retrieve(
-        self, video_id: VideoID, preferred_languages: Sequence[str]
+        self,
+        video_id: VideoID,
+        preferred_languages: Sequence[str],
+        *,
+        refresh: bool = False,
     ) -> Optional[VideoTranscriptBundle]:
         cache_path = self._cache_path(video_id, preferred_languages)
 
-        if cache_path.exists():
+        if not refresh and cache_path.exists():
             cached = self._load_cache(cache_path)
             if cached is not None:
                 return cached
@@ -79,10 +83,11 @@ class CachedYouTubeTranscriptRepository(TranscriptRepository):
                     title=metadata_dict.get("title"),
                     description=metadata_dict.get("description"),
                 )
-                return VideoTranscriptBundle(
+                bundle = VideoTranscriptBundle(
                     transcript=transcript,
                     metadata=metadata,
                 )
+                return bundle
 
         if isinstance(payload, list) and all(
             isinstance(item, TranscriptLine) for item in payload

@@ -56,6 +56,11 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Disable URL, title, and description output.",
     )
+    fetch_parser.add_argument(
+        "--refresh",
+        action="store_true",
+        help="Bypass local cache and fetch transcript/metadata from YouTube.",
+    )
 
     config_parser = subparsers.add_parser("config", help="Configure ytt settings.")
     config_parser.add_argument(
