@@ -29,7 +29,8 @@ def build_parser() -> argparse.ArgumentParser:
     )
     fetch_parser.add_argument(
         "youtube_url",
-        help="The URL of the YouTube video (wrap it in quotes in your shell).",
+        nargs="?",
+        help="The URL of the YouTube video (optional; falls back to clipboard when omitted).",
     )
     fetch_parser.add_argument(
         "--no-copy",

@@ -17,33 +17,59 @@ from .infrastructure import (
     YouTubeMetadataGateway,
 )
 
+_COMMANDS = {"fetch", "config", "help"}
+_GLOBAL_FLAGS = {"-h", "--help", "-V", "--version"}
+_FETCH_FLAGS = {
+    "--no-copy",
+    "--no-title",
+    "--no-description",
+    "--no-url",
+    "--no-metadata",
+    "--refresh",
+}
+
+
+def _read_clipboard_youtube_url_or_exit(parser, clipboard: ClipboardGateway) -> str:
+    try:
+        clipboard_text = clipboard.read().strip()
+    except pyperclip.PyperclipException:
+        raise SystemExit(1)
+
+    if not clipboard_text:
+        print(
+            "Error: Clipboard is empty. Provide a YouTube URL or use 'ytt --help'.",
+            file=sys.stderr,
+        )
+        parser.print_help(sys.stderr)
+        raise SystemExit(1)
+    if not extract_video_id(clipboard_text):
+        print(
+            "Error: No YouTube URL found in clipboard. Provide a URL or use 'ytt --help'.",
+            file=sys.stderr,
+        )
+        parser.print_help(sys.stderr)
+        raise SystemExit(1)
+    return clipboard_text
+
+
+def _is_top_level_fetch_flag_invocation(argv: List[str]) -> bool:
+    return bool(argv) and all(arg in _FETCH_FLAGS for arg in argv)
+
 
 def _prepare_args(argv: List[str], clipboard: ClipboardGateway):
     parser = build_parser()
-    if argv and argv[0] not in {"fetch", "config", "help"}:
+    if not argv:
+        argv = ["fetch"]
+    elif argv[0] not in _COMMANDS:
         if "http://" in argv[0] or "https://" in argv[0]:
             argv = ["fetch", *argv]
-    if not argv:
-        try:
-            clipboard_text = clipboard.read().strip()
-        except pyperclip.PyperclipException:
-            raise SystemExit(1)
-        if not clipboard_text:
-            print(
-                "Error: Clipboard is empty. Provide a YouTube URL or use 'ytt --help'.",
-                file=sys.stderr,
-            )
-            parser.print_help(sys.stderr)
-            raise SystemExit(1)
-        if not extract_video_id(clipboard_text):
-            print(
-                "Error: No YouTube URL found in clipboard. Provide a URL or use 'ytt --help'.",
-                file=sys.stderr,
-            )
-            parser.print_help(sys.stderr)
-            raise SystemExit(1)
-        argv = ["fetch", clipboard_text]
-    return parser, parser.parse_args(argv)
+        elif argv[0] not in _GLOBAL_FLAGS and _is_top_level_fetch_flag_invocation(argv):
+            argv = ["fetch", *argv]
+
+    args = parser.parse_args(argv)
+    if args.command == "fetch" and not args.youtube_url:
+        args.youtube_url = _read_clipboard_youtube_url_or_exit(parser, clipboard)
+    return parser, args
 
 
 def main() -> None:

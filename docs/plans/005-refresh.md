@@ -4,11 +4,11 @@
 - Spec: `docs/specs/005-refresh.md`
 
 ## Task Breakdown
-- [ ] Add `--refresh` argument to fetch CLI parser.
-- [ ] Thread `refresh` through main/use case/domain service/repository interfaces.
-- [ ] Implement repository logic to skip cache read when refresh is enabled while preserving cache writes.
-- [ ] Add/adjust tests for CLI wiring and repository behavior.
-- [ ] Update README and CHANGELOG.
+- [x] Add `--refresh` argument to fetch CLI parser.
+- [x] Thread `refresh` through main/use case/domain service/repository interfaces.
+- [x] Implement repository logic to skip cache read when refresh is enabled while preserving cache writes.
+- [x] Add/adjust tests for CLI wiring and repository behavior.
+- [x] Update README and CHANGELOG.
 
 ## Sequencing
 1. Add interface and repository support for refresh.

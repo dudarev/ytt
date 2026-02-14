@@ -164,6 +164,70 @@ class TestYttClipboard(unittest.TestCase):
         stdout_value = mock_stdout.getvalue().replace('\\n', '\n')
         self.assertIn(self.expected_transcript_header, stdout_value)
 
+    @patch('ytt.main.PyperclipClipboardGateway.read')
+    @patch('ytt.pyperclip.copy')
+    @patch('ytt.domain.services.TranscriptService.fetch')
+    @patch('sys.stdout', new_callable=io.StringIO)
+    @patch('ytt.application.config_service.ConfigService.get_preferred_languages')
+    @patch('ytt.application.fetch_service.extract_video_id')
+    def test_fetch_refresh_without_url_uses_clipboard(
+        self,
+        mock_extract_video_id,
+        mock_get_languages,
+        mock_stdout,
+        mock_fetch_transcript,
+        mock_pyperclip_copy,
+        mock_clipboard_read,
+    ):
+        mock_extract_video_id.return_value = VideoID("test_video_id")
+        mock_fetch_transcript.return_value = self.sample_bundle
+        mock_get_languages.return_value = ['en']
+        mock_clipboard_read.return_value = "https://www.youtube.com/watch?v=test_video_id"
+
+        test_args = ['ytt.py', 'fetch', '--refresh']
+        with patch.object(sys, 'argv', test_args):
+            try:
+                ytt.main()
+            except SystemExit as exc:
+                self.assertIsNone(exc.code)
+
+        mock_clipboard_read.assert_called_once()
+        mock_fetch_transcript.assert_called_once()
+        self.assertTrue(mock_fetch_transcript.call_args.kwargs.get("refresh"))
+        mock_pyperclip_copy.assert_called_once_with(self.expected_clipboard_with_url)
+
+    @patch('ytt.main.PyperclipClipboardGateway.read')
+    @patch('ytt.pyperclip.copy')
+    @patch('ytt.domain.services.TranscriptService.fetch')
+    @patch('sys.stdout', new_callable=io.StringIO)
+    @patch('ytt.application.config_service.ConfigService.get_preferred_languages')
+    @patch('ytt.application.fetch_service.extract_video_id')
+    def test_top_level_refresh_without_url_uses_clipboard(
+        self,
+        mock_extract_video_id,
+        mock_get_languages,
+        mock_stdout,
+        mock_fetch_transcript,
+        mock_pyperclip_copy,
+        mock_clipboard_read,
+    ):
+        mock_extract_video_id.return_value = VideoID("test_video_id")
+        mock_fetch_transcript.return_value = self.sample_bundle
+        mock_get_languages.return_value = ['en']
+        mock_clipboard_read.return_value = "https://www.youtube.com/watch?v=test_video_id"
+
+        test_args = ['ytt.py', '--refresh']
+        with patch.object(sys, 'argv', test_args):
+            try:
+                ytt.main()
+            except SystemExit as exc:
+                self.assertIsNone(exc.code)
+
+        mock_clipboard_read.assert_called_once()
+        mock_fetch_transcript.assert_called_once()
+        self.assertTrue(mock_fetch_transcript.call_args.kwargs.get("refresh"))
+        mock_pyperclip_copy.assert_called_once_with(self.expected_clipboard_with_url)
+
     @patch('ytt.pyperclip.copy')
     @patch('ytt.domain.services.TranscriptService.fetch')
     @patch('sys.stdout', new_callable=io.StringIO)
