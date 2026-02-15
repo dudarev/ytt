@@ -25,7 +25,7 @@ class VideoID:
 MARKDOWN_LINK_PATTERN = re.compile(
     r"""
     !?\[            # opening [, optional image marker
-    [^\]]*          # link text
+    (?:\\.|[^\]])*  # link text, allowing escaped brackets like \]
     \]              # closing ]
     \(\s*           # opening parenthesis for URL
     (?P<url>[^)\s]+(?:[^)]*[^)\s])?)  # URL contents, ignore surrounding whitespace

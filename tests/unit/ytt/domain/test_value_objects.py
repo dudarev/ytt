@@ -39,6 +39,15 @@ class TestExtractVideoID(unittest.TestCase):
         self.assertIsInstance(video_id, VideoID)
         self.assertEqual(video_id.value, "BsWxPI9UM4c")
 
+    def test_markdown_with_escaped_brackets_in_link_text(self):
+        link = (
+            r"[(4) AI-Written Code: Armin Ronacher on AI Agents and the Future of Programming "
+            r"\[Full Episode\] - YouTube](https://www.youtube.com/watch?v=4zlHCW0Yihg)"
+        )
+        video_id = extract_video_id(link)
+        self.assertIsInstance(video_id, VideoID)
+        self.assertEqual(video_id.value, "4zlHCW0Yihg")
+
     def test_non_markdown_string_returns_none(self):
         self.assertIsNone(extract_video_id("not a url at all"))
 
