@@ -115,7 +115,7 @@ class CachedYouTubeTranscriptRepository(TranscriptRepository):
 
     def _fetch_from_api(self, video_id: VideoID, preferred_languages: Sequence[str]) -> Optional[Iterable[dict]]:
         try:
-            transcript_list = YouTubeTranscriptApi.list_transcripts(video_id.value)
+            transcript_list = YouTubeTranscriptApi().list(video_id.value)
             transcript_object = self._find_transcript_object(transcript_list, preferred_languages)
             if transcript_object is None:
                 print(
