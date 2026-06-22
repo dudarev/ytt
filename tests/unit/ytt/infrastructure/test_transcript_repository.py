@@ -54,3 +54,32 @@ def test_retrieve_skips_cache_when_refresh_is_enabled(tmp_path):
     assert repository.load_cache_called is False
     assert repository.fetch_from_api_called is True
     assert bundle.metadata.title == "fresh"
+
+
+def test_cache_path_preserves_language_priority(tmp_path):
+    repository = CachedYouTubeTranscriptRepository(tmp_path, StubMetadataGateway())
+    video_id = VideoID("ccccccccccc")
+
+    default_first = repository._cache_path(video_id, ["en", "de-AT"])
+    override_first = repository._cache_path(video_id, ["de-AT", "en"])
+
+    assert default_first.name == "ccccccccccc_en_de-at.pkl"
+    assert override_first.name == "ccccccccccc_de-at_en.pkl"
+    assert default_first != override_first
+
+
+def test_find_transcript_object_matches_manual_language_code():
+    class StubTranscript:
+        def __init__(self, *, language, language_code, is_generated):
+            self.language = language
+            self.language_code = language_code
+            self.is_generated = is_generated
+
+    transcripts = [
+        StubTranscript(language="German", language_code="de", is_generated=False),
+        StubTranscript(language="German (Austria)", language_code="de-AT", is_generated=False),
+    ]
+
+    selected = CachedYouTubeTranscriptRepository._find_transcript_object(transcripts, ["de-AT"])
+
+    assert selected is transcripts[1]

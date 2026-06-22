@@ -27,6 +27,7 @@ _FETCH_FLAGS = {
     "--no-metadata",
     "--refresh",
 }
+_FETCH_VALUE_FLAGS = {"-l", "--language"}
 
 
 def _read_clipboard_youtube_url_or_exit(parser, clipboard: ClipboardGateway) -> str:
@@ -52,8 +53,35 @@ def _read_clipboard_youtube_url_or_exit(parser, clipboard: ClipboardGateway) -> 
     return clipboard_text
 
 
-def _is_top_level_fetch_flag_invocation(argv: List[str]) -> bool:
-    return bool(argv) and all(arg in _FETCH_FLAGS for arg in argv)
+def _is_top_level_fetch_invocation(argv: List[str]) -> bool:
+    if not argv:
+        return False
+
+    positional_url_seen = False
+    index = 0
+    while index < len(argv):
+        arg = argv[index]
+
+        if arg in _FETCH_FLAGS or arg.startswith("--language="):
+            index += 1
+            continue
+
+        if arg in _FETCH_VALUE_FLAGS:
+            if index + 1 >= len(argv):
+                return True
+            index += 2
+            continue
+
+        if "http://" in arg or "https://" in arg:
+            if positional_url_seen:
+                return False
+            positional_url_seen = True
+            index += 1
+            continue
+
+        return False
+
+    return True
 
 
 def _prepare_args(argv: List[str], clipboard: ClipboardGateway):
@@ -63,7 +91,7 @@ def _prepare_args(argv: List[str], clipboard: ClipboardGateway):
     elif argv[0] not in _COMMANDS:
         if "http://" in argv[0] or "https://" in argv[0]:
             argv = ["fetch", *argv]
-        elif argv[0] not in _GLOBAL_FLAGS and _is_top_level_fetch_flag_invocation(argv):
+        elif argv[0] not in _GLOBAL_FLAGS and _is_top_level_fetch_invocation(argv):
             argv = ["fetch", *argv]
 
     args = parser.parse_args(argv)
@@ -113,6 +141,7 @@ def main() -> None:
             show_url=show_url,
             input_url=args.youtube_url,
             refresh=args.refresh,
+            preferred_language=args.language,
         )
         if bundle:
             FetchTranscriptUseCase.render(
