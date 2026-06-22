@@ -5,6 +5,18 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.10.2] - 2026-06-22
+
+### Added
+- Added ruff linting and formatting configuration with `make lint`, `make fix`, `make lint-fix`, `make format`, and `make check` developer guardrails.
+- Added package build smoke checks to the local workflow, tox, and CI.
+- Added direct runtime dependency declarations for `requests` and `defusedxml`.
+
+### Changed
+- Makefile developer guardrails now run through `uv run --python 3.12 --extra test`, support `UV_PYTHON` overrides, and `make install-local` syncs the local uv environment.
+- Added `uv.lock` so uv-managed local guardrails resolve dependencies consistently.
+- Moved broad CLI clipboard coverage under `tests/integration/ytt/` to start separating integration tests from unit tests.
+
 ## [0.10.1] - 2026-06-22
 
 ### Added

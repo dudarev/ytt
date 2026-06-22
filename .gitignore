@@ -1,5 +1,7 @@
 .python-version
+.venv/
 __pycache__/
 *.egg-info
 build/
+dist/
 .vscode/

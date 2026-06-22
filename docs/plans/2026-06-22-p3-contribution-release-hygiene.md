@@ -1,8 +1,5 @@
 # Plan: P3 contribution and release hygiene
 
-- PRD: Deferred until implementation.
-- Spec: Deferred until implementation.
-
 ## Goal
 Make future changes easier to review, keep dependencies current, and make releases repeatable.
 

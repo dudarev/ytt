@@ -1,8 +1,5 @@
 # Plan: P4 long-term hardening
 
-- PRD: Deferred until implementation.
-- Spec: Deferred until implementation.
-
 ## Goal
 Reduce hidden compatibility risks and clarify long-term maintenance boundaries for cache data, public APIs, and execution modes.
 
