@@ -83,3 +83,26 @@ def test_find_transcript_object_matches_manual_language_code():
     selected = CachedYouTubeTranscriptRepository._find_transcript_object(transcripts, ["de-AT"])
 
     assert selected is transcripts[1]
+
+
+def test_to_transcript_handles_fetched_snippet_objects():
+    class StubFetchedTranscriptSnippet:
+        def __init__(self, text, start, duration):
+            self.text = text
+            self.start = start
+            self.duration = duration
+
+    snippets = [
+        StubFetchedTranscriptSnippet("Hello world", 0.0, 3.5),
+        StubFetchedTranscriptSnippet("This is a test", 3.5, 2.1),
+    ]
+
+    result = CachedYouTubeTranscriptRepository._to_transcript(snippets)
+
+    assert len(result) == 2
+    assert result[0].text == "Hello world"
+    assert result[0].start == 0.0
+    assert result[0].duration == 3.5
+    assert result[1].text == "This is a test"
+    assert result[1].start == 3.5
+    assert result[1].duration == 2.1

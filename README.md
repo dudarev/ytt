@@ -56,23 +56,39 @@ uv tool uninstall ytt
     cd ytt
     ```
 
-2.  **Install the project along with its optional test dependencies:**
+2.  **Sync the local uv environment with optional test dependencies:**
 
     ```bash
-    uv pip install --reinstall -e .[test]
+    uv sync --python 3.12 --extra test
     ```
 
-    The `--reinstall` flag forces `uv` to refresh the editable install so you always develop against the current source. The `[test]` extra pulls in the tools required to run the test suite.
+    This creates or updates the local `.venv` managed by `uv`. The `[test]` extra pulls in the tools required to run the local guardrails.
 
     Alternatively, you can use the provided `Makefile` helpers:
 
     ```bash
     make            # shows available commands
-    make install-local       # installs the package in editable mode with test dependencies (forced reinstall)
+    make install-local       # syncs the local uv environment with test dependencies
     make install-global      # installs the current checkout globally (forced reinstall)
     make uninstall-global    # removes the globally installed ytt tool
+    make lint                # runs ruff lint checks
+    make fix                 # applies safe automated fixes
+    make lint-fix            # applies safe ruff lint fixes
+    make format              # formats Python code with ruff
     make test                # runs the test suite via pytest
+    make package-smoke       # builds source and wheel distributions
+    make check               # runs lint, tests, and package smoke checks
     ```
+
+### Local verification
+
+Run the same default guardrails used by CI before opening a pull request:
+
+```bash
+make check
+```
+
+The target runs through `uv run --python 3.12 --extra test`, using the local uv-managed environment instead of whichever `python` is active in your shell. Override the version with `make UV_PYTHON=3.13 check` when needed. It runs `ruff check .`, the pytest suite, and a source/wheel build smoke check. Run `make fix` before `make check` to apply safe automated fixes first. Use `make format` when you want ruff to format Python files locally.
 
 
 ## Usage

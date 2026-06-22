@@ -5,7 +5,7 @@
 Make the default branch difficult to break, ensure pull requests run the core verification suite, and remove local/package ambiguity that can make development exercise stale code.
 
 ## Task Breakdown
-- [ ] Enable branch protection for `main` after CI lands on the default branch.
+- [x] Enable branch protection for `main` after CI lands on the default branch.
 - [x] Document required pull requests before merging to `main`.
 - [x] Document required CI checks before merging.
 - [x] Document disabled force pushes and branch deletion on `main`.

@@ -1,8 +1,5 @@
 # Plan: P2 test quality
 
-- PRD: Deferred until implementation.
-- Spec: Deferred until implementation.
-
 ## Goal
 Improve confidence in the most brittle behavior: YouTube metadata extraction, CLI output, package execution, and cache behavior.
 

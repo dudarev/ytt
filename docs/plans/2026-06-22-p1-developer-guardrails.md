@@ -1,22 +1,19 @@
 # Plan: P1 developer guardrails
 
-- PRD: Deferred until implementation.
-- Spec: Deferred until implementation.
-
 ## Goal
 Give maintainers one reliable local command set for linting, formatting, tests, and packaging checks, then run the same guardrails in CI.
 
 ## Task Breakdown
-- [ ] Add `ruff` as a development/test dependency.
-- [ ] Configure lint rules in `pyproject.toml`.
-- [ ] Configure formatting with `ruff format`.
-- [ ] Add `make lint`.
-- [ ] Add `make format`.
-- [ ] Add `make check` to run lint, tests, and package smoke checks.
-- [ ] Add direct dependencies for modules imported by project code, especially `requests` and `defusedxml`.
-- [ ] Add CI jobs or steps for linting and packaging checks.
-- [ ] Start moving broad tests toward the documented `tests/unit` and `tests/integration` split.
-- [ ] Update README or `CONTRIBUTING.md` with the local verification workflow.
+- [x] Add `ruff` as a development/test dependency.
+- [x] Configure lint rules in `pyproject.toml`.
+- [x] Configure formatting with `ruff format`.
+- [x] Add `make lint`.
+- [x] Add `make format`.
+- [x] Add `make check` to run lint, tests, and package smoke checks.
+- [x] Add direct dependencies for modules imported by project code, especially `requests` and `defusedxml`.
+- [x] Add CI jobs or steps for linting and packaging checks.
+- [x] Start moving broad tests toward the documented `tests/unit` and `tests/integration` split.
+- [x] Update README or `CONTRIBUTING.md` with the local verification workflow.
 
 ## Sequencing
 1. Add ruff dependency and a conservative configuration.

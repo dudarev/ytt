@@ -5,7 +5,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Iterable, Optional, Sequence
 
-import pyperclip  # re-exported for backwards compatibility
+import pyperclip as pyperclip  # re-exported for backwards compatibility
 
 from .domain import TranscriptService, VideoID, VideoTranscriptBundle, extract_video_id
 from .domain.entities import TranscriptLine, VideoMetadata
@@ -32,6 +32,7 @@ __all__ = [
     "get_video_metadata",
     "get_video_bundle",
     "copy_to_clipboard",
+    "pyperclip",
     "__version__",
 ]
 
