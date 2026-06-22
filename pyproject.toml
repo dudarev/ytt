@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "ytt"
-version = "0.10.0"
+version = "0.10.1"
 description = "A simple CLI tool to fetch YouTube video transcripts."
 readme = "README.md"
 requires-python = ">=3.12"
@@ -37,3 +37,7 @@ ytt = "ytt:main"
 [tool.setuptools.packages.find]
 where = ["src"]
 include = ["ytt*"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

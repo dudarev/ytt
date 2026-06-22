@@ -1,22 +1,20 @@
 # Plan: P0 repository safety and correctness
 
-- PRD: Deferred until implementation.
-- Spec: Deferred until implementation.
 
 ## Goal
 Make the default branch difficult to break, ensure pull requests run the core verification suite, and remove local/package ambiguity that can make development exercise stale code.
 
 ## Task Breakdown
-- [ ] Enable branch protection for `main`.
-- [ ] Require pull requests before merging to `main`.
-- [ ] Require CI checks to pass before merging.
-- [ ] Disable force pushes and branch deletion on `main`.
-- [ ] Add a GitHub Actions workflow for `pull_request` and `push` to `main`.
-- [ ] Add `tox` so the Python version matrix can run consistently in CI and locally.
-- [ ] Run tests on Python 3.12 and 3.13.
-- [ ] Fix the stale top-level `ytt/` package so local `import ytt` resolves to `src/ytt`.
-- [ ] Add package-install smoke checks for `ytt --help`, `ytt --version`, and `import ytt`.
-- [ ] Update version and changelog if packaging or public import behavior changes.
+- [ ] Enable branch protection for `main` after CI lands on the default branch.
+- [x] Document required pull requests before merging to `main`.
+- [x] Document required CI checks before merging.
+- [x] Document disabled force pushes and branch deletion on `main`.
+- [x] Add a GitHub Actions workflow for `pull_request` and `push` to `main`.
+- [x] Add `tox` so the Python version matrix can run consistently in CI and locally.
+- [x] Run tests on Python 3.12 and 3.13.
+- [x] Fix the stale top-level `ytt/` package so local test imports resolve to `src/ytt` and installed imports resolve to the installed package.
+- [x] Add package-install smoke checks for `ytt --help`, `ytt --version`, and `import ytt`.
+- [x] Update version and changelog if packaging or public import behavior changes.
 
 ## Sequencing
 1. Add `tox` environments for the supported Python versions.
@@ -41,8 +39,8 @@ Make the default branch difficult to break, ensure pull requests run the core ve
   - Mitigation: use `tox` as the shared matrix runner and expose it through `make` targets in follow-up P1 work.
 
 ## Definition of Done
-- PRs into `main` require passing checks.
+- PRs into `main` require passing checks once the documented branch protection policy is applied after CI lands.
 - `tox` runs `pytest` on Python 3.12 and 3.13 in CI.
-- Local and installed imports resolve to the intended `src/ytt` package.
+- Local test imports resolve to `src/ytt`; installed imports resolve to the installed package built from `src/ytt`.
 - Installed CLI smoke checks pass in CI.
 - Any packaging/public-interface behavior changes are reflected in version and changelog.
