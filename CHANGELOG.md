@@ -12,6 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - Per-fetch language override now takes priority and then falls back to configured `preferred_languages`.
+- Top-level fetch inference now supports combining `-l` / `--language` with other fetch flags in any order.
+- Transcript cache keys now preserve preferred-language priority so per-fetch overrides cannot reuse a lower-priority cached transcript.
 - Manual transcript selection now matches preferred languages by `language_code` (for example `de-AT`) in addition to language labels.
 
 ## [0.9.3] - 2026-03-01

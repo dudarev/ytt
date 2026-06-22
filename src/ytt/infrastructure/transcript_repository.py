@@ -53,7 +53,13 @@ class CachedYouTubeTranscriptRepository(TranscriptRepository):
         return None
 
     def _cache_path(self, video_id: VideoID, preferred_languages: Sequence[str]) -> Path:
-        languages = sorted({lang.lower() for lang in preferred_languages if lang})
+        languages: list[str] = []
+        seen: set[str] = set()
+        for lang in preferred_languages:
+            normalized = lang.strip().lower()
+            if normalized and normalized not in seen:
+                languages.append(normalized)
+                seen.add(normalized)
         lang_key = "_".join(languages) if languages else "any"
         return self._cache_dir / f"{video_id.value}_{lang_key}.pkl"
 

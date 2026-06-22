@@ -119,6 +119,7 @@ ytt fetch --refresh
 ytt --refresh
 ytt -l de-AT
 ytt --language de-AT
+ytt --refresh -l de-AT
 ```
 
 By default, the tool will output the canonical video URL as the first line, followed by the video's title and description, and then the transcript, all formatted in Markdown. The output is also automatically copied to your clipboard.
