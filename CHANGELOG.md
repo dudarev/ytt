@@ -5,6 +5,15 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.10.0] - 2026-06-22
+
+### Added
+- Added `-l` / `--language` for per-fetch transcript language preference, including top-level invocations like `ytt -l de-AT` and `ytt --language de-AT`.
+
+### Changed
+- Per-fetch language override now takes priority and then falls back to configured `preferred_languages`.
+- Manual transcript selection now matches preferred languages by `language_code` (for example `de-AT`) in addition to language labels.
+
 ## [0.9.3] - 2026-03-01
 
 ### Fixed

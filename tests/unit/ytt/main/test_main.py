@@ -45,6 +45,26 @@ def test_prepare_args_top_level_refresh_uses_clipboard():
     assert args.refresh is True
 
 
+def test_prepare_args_top_level_language_short_flag_uses_clipboard():
+    clipboard = StubClipboard("https://youtu.be/example")
+
+    parser, args = _prepare_args(["-l", "de-AT"], clipboard)
+
+    assert args.command == "fetch"
+    assert args.youtube_url == "https://youtu.be/example"
+    assert args.language == "de-AT"
+
+
+def test_prepare_args_top_level_language_long_flag_equals_uses_clipboard():
+    clipboard = StubClipboard("https://youtu.be/example")
+
+    parser, args = _prepare_args(["--language=de-AT"], clipboard)
+
+    assert args.command == "fetch"
+    assert args.youtube_url == "https://youtu.be/example"
+    assert args.language == "de-AT"
+
+
 def test_prepare_args_errors_on_empty_clipboard(capsys):
     clipboard = StubClipboard("   ")
 

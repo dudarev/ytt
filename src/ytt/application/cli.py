@@ -33,6 +33,11 @@ def build_parser() -> argparse.ArgumentParser:
         help="The URL of the YouTube video (optional; falls back to clipboard when omitted).",
     )
     fetch_parser.add_argument(
+        "-l",
+        "--language",
+        help="Preferred language for this fetch only (falls back to configured languages).",
+    )
+    fetch_parser.add_argument(
         "--no-copy",
         action="store_true",
         help="Do not copy the transcript to the clipboard.",

@@ -117,6 +117,8 @@ Flag-only fetch invocations also fall back to clipboard when URL is omitted:
 ```bash
 ytt fetch --refresh
 ytt --refresh
+ytt -l de-AT
+ytt --language de-AT
 ```
 
 By default, the tool will output the canonical video URL as the first line, followed by the video's title and description, and then the transcript, all formatted in Markdown. The output is also automatically copied to your clipboard.
@@ -141,6 +143,7 @@ Description text here...
 ```
 
 The tool prioritizes manually created transcripts and will attempt your preferred languages in the given order.
+You can override language priority for a single fetch by passing `-l/--language`; if unavailable, YTT falls back to configured preferred languages.
 If successful, it will print the URL, title, description and the transcript text to standard output. Errors will be printed to standard error.
 
 **Controlling Output:**
@@ -152,6 +155,7 @@ You can control the output with the following flags:
 *   `--no-description`: Suppress the video description.
 *   `--no-metadata`: Suppress the URL, title, and description.
 *   `--refresh`: Bypass local cache and fetch transcript/metadata from YouTube.
+*   `-l`, `--language`: Try this language first for this fetch only, then fall back to configured preferred languages.
 *   `--no-copy`: Do not copy the output to the clipboard.
 
 **Redirecting Output:**

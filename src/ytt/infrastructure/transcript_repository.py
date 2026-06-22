@@ -146,7 +146,9 @@ class CachedYouTubeTranscriptRepository(TranscriptRepository):
         if manual_transcripts and preferred_languages:
             for lang in preferred_languages:
                 for transcript in manual_transcripts:
-                    if transcript.language == lang:
+                    transcript_language = getattr(transcript, "language", None)
+                    transcript_language_code = getattr(transcript, "language_code", None)
+                    if transcript_language == lang or transcript_language_code == lang:
                         return transcript
 
         if preferred_languages:

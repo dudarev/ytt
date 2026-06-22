@@ -30,8 +30,19 @@ class FetchTranscriptUseCase:
         self._clipboard = clipboard
         self._extractor = extractor or extract_video_id
 
-    def _resolve_preferred_languages(self) -> Sequence[str]:
-        languages = list(self._config_service.get_preferred_languages())
+    def _resolve_preferred_languages(self, preferred_language: Optional[str] = None) -> Sequence[str]:
+        languages: list[str] = []
+        if preferred_language and preferred_language.strip():
+            languages.append(preferred_language.strip())
+
+        configured_languages = list(self._config_service.get_preferred_languages())
+        seen = {language.lower() for language in languages}
+        for language in configured_languages:
+            normalized = language.lower()
+            if normalized not in seen:
+                languages.append(language)
+                seen.add(normalized)
+
         if not languages:
             print("Error: Preferred languages not set in configuration.", file=sys.stderr)
             print("Please set them using: ytt config languages <lang1>,<lang2>,...", file=sys.stderr)
@@ -62,9 +73,10 @@ class FetchTranscriptUseCase:
         show_url: bool = True,
         input_url: Optional[str] = None,
         refresh: bool = False,
+        preferred_language: Optional[str] = None,
     ) -> Optional[VideoTranscriptBundle]:
         video_id = self._ensure_video_id(url)
-        languages = self._resolve_preferred_languages()
+        languages = self._resolve_preferred_languages(preferred_language)
         bundle = self._service.fetch(video_id, languages, refresh=refresh)
         if not bundle:
             return None
