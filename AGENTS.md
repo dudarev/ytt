@@ -27,6 +27,8 @@ Follow this lightweight flow for any non-trivial feature or change. Keep documen
 - Contents: task breakdown (checklist), sequencing/milestones, dependencies, owner(s), risks/mitigations, Definition of Done.
 - Must link to both PRD and Spec; keep reciprocal links updated (PRD ↔ Plan, Spec ↔ Plan).
 
+Standalone plans that are not part of a synchronized PRD/Spec/Plan set should also live in `docs/plans/`, but must use a date prefix instead of the numbered `NNN-` prefix: `YYYY-MM-DD-<slug>.md`. Use this for roadmap, priority, audit, or planning-only documents where creating matching PRD and spec files would add overhead without improving implementation clarity. When creating dated plan filenames, run `date -I` and use that value.
+
 4) Deliver (implement)
 - Create branch: `feat/NNN-<slug>` and implement per plan.
 - Update or add tests under `tests/` to cover behavior and edge cases.
