@@ -2,13 +2,6 @@ import unittest
 from unittest.mock import patch
 import io  # For capturing stderr/stdout
 import sys
-from pathlib import Path
-
-# Add project root to sys.path to allow importing ytt
-project_root = Path(__file__).parent.parent.resolve()
-src_root = project_root / "src"
-sys.path.insert(0, str(src_root))
-sys.path.insert(1, str(project_root))
 
 import ytt
 from ytt.domain import VideoID
@@ -415,7 +408,4 @@ class TestTranscriptRepository(unittest.TestCase):
 
 
 if __name__ == '__main__':
-    # Create tests directory if it doesn't exist
-    if not Path('tests').exists():
-        Path('tests').mkdir()
     unittest.main()

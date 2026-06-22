@@ -5,6 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.10.1] - 2026-06-22
+
+### Added
+- Added tox and GitHub Actions CI coverage for Python 3.12 and 3.13.
+- Added installed-package smoke checks for `ytt --help`, `ytt --version`, and `import ytt`.
+- Documented the required `main` branch protection policy.
+
+### Fixed
+- Removed the stale top-level `ytt/` package so checkout imports no longer shadow `src/ytt`.
+
 ## [0.10.0] - 2026-06-22
 
 ### Added

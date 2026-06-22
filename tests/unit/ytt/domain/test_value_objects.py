@@ -1,11 +1,4 @@
-import sys
 import unittest
-from pathlib import Path
-
-project_root = Path(__file__).resolve().parents[4]
-src_root = project_root / "src"
-sys.path.insert(0, str(src_root))
-sys.path.insert(1, str(project_root))
 
 from ytt.domain.value_objects import VideoID, extract_video_id
 
